@@ -1,0 +1,25 @@
+---
+title: "project-practice"
+format: html
+---
+
+### Read in data
+```{r}
+library(tidyverse)
+qb1 <- read_csv(here::here("data", "QuebradaCuenca1-Bisley.csv"))
+qb2 <- read_csv(here::here("data", "QuebradaCuenca2-Bisley.csv"))
+qb3 <- read_csv(here::here("data", "QuebradaCuenca3-Bisley.csv"))
+
+qb <- qb1 %>% full_join(qb2, by = "Sample_ID")
+qb <- qb %>% full_join(qb3, by = "Sample_ID")
+
+
+```
+
+
+### tidy
+```{r}
+
+```
+
+
