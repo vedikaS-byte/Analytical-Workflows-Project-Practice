@@ -30,7 +30,7 @@ unique(qb_pmr$Sample_ID)
 
 qb_pmr <-  qb_pmr %>% pivot_longer(cols = c("K", "NO3-N", "Mg", "Ca","NH4-N"), names_to = "nutrients", values_to = "concentration") %>% select(Sample_Date, nutrients, concentration, Sample_ID)
 colnames(qb_pmr)
-??lubridate
+# ??lubridate
 
 
 ## groupby nutrients and create moving averages
