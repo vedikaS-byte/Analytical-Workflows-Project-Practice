@@ -88,7 +88,7 @@ qb_pmr_test <- qb_pmr
 #     print(qb_pmr$nine_wk_interval)
 #   }
 # }
-
+?days()
 # function should take nutrient data and intervals to define interval size?
 moving_ags <- function(nutrient_data, weeks_param){
   nutrient_data$moving_avg <- vector(mode = "numeric")
