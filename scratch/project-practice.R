@@ -159,7 +159,7 @@ moving_ags <- function(nutrient_data, weeks_break){
   }
   
 }
-str(qb_pmr)
+#str(qb_pmr)
 moving_ags(qb_pmr, weeks_break = 9)
 
 
