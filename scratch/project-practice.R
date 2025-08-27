@@ -19,7 +19,7 @@ pmr <- read_csv(here::here("data", "RioMameyesPuenteRoto.csv"))
 qb <- qb1 %>% full_join(qb2)
 qb <- qb %>% full_join(qb3)
 qb_pmr <- qb %>% full_join(pmr)
-
+dim(qb_pmr)
 
 qb_pmr_2 <- qb1 %>% rbind(qb2, qb3, pmr)
 view(qb_pmr_2)
@@ -30,11 +30,23 @@ unique(qb_pmr$Sample_ID)
 
 qb_pmr <-  qb_pmr %>% pivot_longer(cols = c("K", "NO3-N", "Mg", "Ca","NH4-N"), names_to = "nutrients", values_to = "concentration") %>% select(Sample_Date, nutrients, concentration, Sample_ID)
 colnames(qb_pmr)
+<<<<<<< HEAD
 # <<<<<<< HEAD
 # ??lubridate
 # =======
 # ?lubridate
 # >>>>>>> 205a1791e73679ea8dd09d7580f14a0724039abe
+=======
+<<<<<<< HEAD
+#?lubridate
+=======
+<<<<<<< HEAD
+??lubridate
+=======
+?lubridate
+>>>>>>> 205a1791e73679ea8dd09d7580f14a0724039abe
+>>>>>>> 3c241b635ef63549ffc13c541ba3f42a23f9943b
+>>>>>>> 91e299773def2a018847448f35a51fb35e27189d
 
 
 ## groupby nutrients and create moving averages
@@ -47,7 +59,7 @@ facet_wrap(~nutrients) + guides(col = "none")
 
 qb_pmr<- qb_pmr %>% filter(year_sample >= 1986 & year_sample <= 1995)
 unique(qb_pmr$year_sample)
-
+dim(qb_pmr)
 k <- qb_pmr %>% group_by(year_sample, Sample_ID, nutrients) %>%  summarize(yearly_mean_concentration = mean(concentration, na.rm = T)) %>% filter( nutrients %in% "K")%>% ggplot(aes(x = factor(year_sample), y = yearly_mean_concentration, col = Sample_ID, group = Sample_ID)) + geom_line() + geom_point()  +
  theme_bw() 
 
@@ -83,6 +95,7 @@ str(qb_pmr)
 ?interval()
 unique(qb_pmr$nutrients)
 
+
 qb_pmr_test <- qb_pmr
 
 # week_interval <-  function(week_of_year){
@@ -92,27 +105,48 @@ qb_pmr_test <- qb_pmr
 #     print(qb_pmr$nine_wk_interval)
 #   }
 # }
-?days()
+dim(qb_pmr)
+start_date <- qb_pmr$Sample_Date[1]
+end_date <- qb_pmr$Sample_Date[9695]
+week_interval <- vector(mode = "numeric")
+week_interval <-seq(from = start_date, to = end_date, by = "9 week")
+# qb_pmr %>% mutate(week_interval = seq(from = start_date, to = end_date, by = "9 week"))
+
+start_date <- qb_pmr$Sample_Date[1]
+end_date <- qb_pmr$Sample_Date[9695]
+
+week_intervals <- vector(mode = "numeric", length = length(qb_pmr$Sample_Date) )
+
+for(i in unique(qb_pmr$nutrients)){
+  for(j in seq_along(qb_pmr$Sample_Date)){
+    # week_interval <- weeks(1:10)
+    #week_intervals <- seq(from = start_date, to = end_date, by = "9 week")
+   week_intervals <- interval(start_date, end_date)/weeks(9)
+  }
+  print(week_intervals)
+}
+
+
+
 # function should take nutrient data and intervals to define interval size?
-moving_ags <- function(nutrient_data, weeks_param){
-  nutrient_data$moving_avg <- vector(mode = "numeric")
+moving_ags <- function(nutrients, weeks_break){
+  #nutrient_data$moving_avg <- vector(mode = "numeric")
+  qb_pmr$weeks_param <-  vector(mode = "numeric")
   # loop for nutrients? 
   for(i in unique(nutrients)){
     # pull nutrients in a subset
     # also subset dates? or weeks... go row by row?
     #subset_nutrient_data <- nutrient_data %>% filter(nutrient_data == i)
-    for(j in seq_along(week_sample)){
-      qb_pmr$weeks_param[i]  <- qb_pmr$week_sample[i] + 9
+    for(j in seq_along(week_param)){
+      # qb_pmr$weeks_param[i]  <- qb_pmr$week_sample[i+weeks_break]
       # current i and i+1
-     
-      
-      
+      print(qb_pmr$weeks_param)
     }
   }
   
 }
-
-
+?interval()
+moving_ags(qb_pmr$nutrients, weeks_param = qb_pmr$weeks_sample, weeks_break = 9)
 
 
 
