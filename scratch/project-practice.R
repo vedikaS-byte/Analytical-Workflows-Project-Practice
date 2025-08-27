@@ -179,7 +179,7 @@ qb_pmr_2 <- qb_pmr  %>%
   mutate(moving_avg = rollmean(concentration, k = 9, align = "center", fill = NA), na.rm = T) %>%
   ungroup()
 
-str(qb_pmr_2)
+##str(qb_pmr_2)
 qb_pmr_2 %>% ggplot(aes(x = Sample_Date, y = moving_avg,  col = Sample_ID, group = Sample_ID)) + geom_line() + facet_wrap(~nutrients)
 
 
