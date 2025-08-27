@@ -1,4 +1,6 @@
 ## Read in data
+source("R/moving_avg.R")
+
 library(tidyverse)
 qb1 <- read_csv(here::here("data", "QuebradaCuenca1-Bisley.csv"))
 qb2 <- read_csv(here::here("data", "QuebradaCuenca2-Bisley.csv"))
@@ -143,41 +145,40 @@ moving_ags <- function(nutrient_data, weeks_break){
   
 }
 #str(qb_pmr)
-moving_ags(qb_pmr, weeks_break = 9)
+#moving_ags(as.Date(1986-05-20), weeks_break = 9)
 
 
 # function should take nutrient data and intervals to define interval size?
-moving_ags <- function(nutrient_data, weeks_break){
-  # nutrient_data$moving_avg <- vector(mode = "numeric", length = nrow(nutrient_data))
-  nutrient_data$moving_avg <- NA_real_
-  #nutrient_data$weeks_param <-  vector(mode = "numeric")
-  # loop through each nutrient
-  for(i in unique(nutrient_data$nutrients)){
-    # pull nutrients in a subset
-    nutrient_data_subset <- nutrient_data %>% filter(nutrients == i)
-    # also subset dates? or weeks... go row by row?
-    for(j in unique(nutrient_data$Sample_ID)){
-      nutrient_data_subset_sample_id <- nutrient_data_subset %>% 
-        filter(Sample_ID == j) %>% mutate(moving_ag = rollmean(concentration, k = weeks_break, fill = NA, align = "center"))
-      # nutrient_data$moving_avg[j] <- rollmean(nutrient_data$concentration, k = weeks_break, align = "center") 
-     # nutrient_data$weeks_param[j]  <- (nutrient_data$week_sample[j]-1)/9
-    #  ?rollmean()
-      # current i and i+1
-     # print(nutrient_data$weeks_param)
-     
-      # week_interval <- seq(from = start_date, to = end_date, by = "9 weeks")
-      #week_interval <- interval(start_date, end_date)/
-      #qb_pmr$week_intervals[j] <- week_interval
-    }
-  }
-  nutrient_moving_ags <- rbind(nutrient_data_subset, nutrient_data_subset_sample_id)
-}
 
-<<<<<<< HEAD
-####moving_ags(qb_pmr, weeks_break = 9)
-=======
-#moving_ags(qb_pmr, weeks_break = 9)
->>>>>>> f4dc8be0240be0dfe7e3b90ba5a1e9fa4ac6a4b4
+moving_avg(as.Date("1988-02-04"), dates  = qb_pmr_k$Sample_Date, conc = qb_pmr_k$concentration, window_size = 9)
+
+# moving_ags <- function(nutrient_data, weeks_break){
+#   # nutrient_data$moving_avg <- vector(mode = "numeric", length = nrow(nutrient_data))
+#   nutrient_data$moving_avg <- NA_real_
+#   #nutrient_data$weeks_param <-  vector(mode = "numeric")
+#   # loop through each nutrient
+#   for(i in unique(nutrient_data$nutrients)){
+#     # pull nutrients in a subset
+#     nutrient_data_subset <- nutrient_data %>% filter(nutrients == i)
+#     # also subset dates? or weeks... go row by row?
+#     for(j in unique(nutrient_data$Sample_ID)){
+#       nutrient_data_subset_sample_id <- nutrient_data_subset %>% 
+#         filter(Sample_ID == j) %>% mutate(moving_ag = rollmean(concentration, k = weeks_break, fill = NA, align = "center"))
+#       # nutrient_data$moving_avg[j] <- rollmean(nutrient_data$concentration, k = weeks_break, align = "center") 
+#      # nutrient_data$weeks_param[j]  <- (nutrient_data$week_sample[j]-1)/9
+#     #  ?rollmean()
+#       # current i and i+1
+#      # print(nutrient_data$weeks_param)
+#      
+#       # week_interval <- seq(from = start_date, to = end_date, by = "9 weeks")
+#       #week_interval <- interval(start_date, end_date)/
+#       #qb_pmr$week_intervals[j] <- week_interval
+#     }
+#   }
+#   nutrient_moving_ags <- rbind(nutrient_data_subset, nutrient_data_subset_sample_id)
+# }
+
+
 
 
 qb_pmr_2 <- qb_pmr  %>%
@@ -186,11 +187,7 @@ qb_pmr_2 <- qb_pmr  %>%
   mutate(moving_avg = rollmean(concentration, k = 9, align = "center", fill = NA), na.rm = T) %>%
   ungroup()
 
-<<<<<<< HEAD
-#str(qb_pmr_2)
-=======
-str(qb_pmr_2)
->>>>>>> be1127d43110f2e4aa7f45e9612ca7aff5a9d152
+
 qb_pmr_2 %>% ggplot(aes(x = Sample_Date, y = moving_avg,  col = Sample_ID, group = Sample_ID)) + geom_line() + facet_wrap(~nutrients)
 
 
