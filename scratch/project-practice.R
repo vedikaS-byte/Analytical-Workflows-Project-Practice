@@ -30,6 +30,26 @@ unique(qb_pmr$Sample_ID)
 
 qb_pmr <-  qb_pmr %>% pivot_longer(cols = c("K", "NO3-N", "Mg", "Ca","NH4-N"), names_to = "nutrients", values_to = "concentration") %>% select(Sample_Date, nutrients, concentration, Sample_ID)
 colnames(qb_pmr)
+<<<<<<< HEAD
+<<<<<<< HEAD
+# <<<<<<< HEAD
+# ??lubridate
+# =======
+# ?lubridate
+# >>>>>>> 205a1791e73679ea8dd09d7580f14a0724039abe
+=======
+<<<<<<< HEAD
+#?lubridate
+=======
+<<<<<<< HEAD
+??lubridate
+=======
+?lubridate
+>>>>>>> 205a1791e73679ea8dd09d7580f14a0724039abe
+>>>>>>> 3c241b635ef63549ffc13c541ba3f42a23f9943b
+>>>>>>> 91e299773def2a018847448f35a51fb35e27189d
+=======
+>>>>>>> db3cc6dedae557074eee702ddb4dacbc75641c43
 
 
 ## groupby nutrients and create moving averages
@@ -139,7 +159,7 @@ moving_ags <- function(nutrient_data, weeks_break){
   }
   
 }
-str(qb_pmr)
+#str(qb_pmr)
 moving_ags(qb_pmr, weeks_break = 9)
 
 
