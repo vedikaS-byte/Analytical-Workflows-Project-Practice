@@ -30,26 +30,7 @@ unique(qb_pmr$Sample_ID)
 
 qb_pmr <-  qb_pmr %>% pivot_longer(cols = c("K", "NO3-N", "Mg", "Ca","NH4-N"), names_to = "nutrients", values_to = "concentration") %>% select(Sample_Date, nutrients, concentration, Sample_ID)
 colnames(qb_pmr)
-<<<<<<< HEAD
-<<<<<<< HEAD
-# <<<<<<< HEAD
-# ??lubridate
-# =======
-# ?lubridate
-# >>>>>>> 205a1791e73679ea8dd09d7580f14a0724039abe
-=======
-<<<<<<< HEAD
-#?lubridate
-=======
-<<<<<<< HEAD
-??lubridate
-=======
-?lubridate
->>>>>>> 205a1791e73679ea8dd09d7580f14a0724039abe
->>>>>>> 3c241b635ef63549ffc13c541ba3f42a23f9943b
->>>>>>> 91e299773def2a018847448f35a51fb35e27189d
-=======
->>>>>>> db3cc6dedae557074eee702ddb4dacbc75641c43
+
 
 
 ## groupby nutrients and create moving averages
@@ -66,6 +47,8 @@ qb_pmr %>% group_by(month_year, year_sample, nutrients) %>%  summarize(monthly_m
 facet_wrap(~nutrients) + guides(col = "none")
 
 qb_pmr<- qb_pmr %>% filter(year_sample >= 1986 & year_sample <= 1995)
+
+str(qb_pmr)
 unique(qb_pmr$year_sample)
 
 dim(qb_pmr)
@@ -211,5 +194,35 @@ str(qb_pmr)
 
 library(dplyr)
 library(zoo)
+#####
+moving_avg <- function(focal_date, dates, conc, window_size) {
+  #which dates are in the window? subset these dates 
+  #dates <- as.Date(dates)
+  is_in_window <- (dates > focal_date - (window_size/2)*7)  & # tell me when dates are greater than focal date offset by half of window 
+    (dates < focal_date + (window_size/2)*7)
+  
+  # find associated concentrations
+  window_conc <- conc[is_in_window] # pull out associated concentrations
+  
+  # calculate mean
+  result <- mean(window_conc, na.rm = T)
+  return(result)
+}
+qb_pmr_k <-  qb_pmr %>% filter(nutrients == "K") 
+  qb_pmr_k$moving_avg_k <- sapply(X = qb_pmr_k$Sample_Date, moving_avg , dates = qb_pmr_k$Sample_Date, conc = qb_pmr_k$concentration, 
+       window_size = 9)
+
+qb_pmr_ca <-  qb_pmr %>% filter(nutrients == "Ca") 
+  qb_pmr_ca$moving_avg_ca <- sapply(X = qb_pmr_ca$Sample_Date, moving_avg , dates = qb_pmr_ca$Sample_Date, conc = qb_pmr_ca$concentration, 
+                                  window_size = 9) 
+  
+  
+  
+  view(qb_pmr_k)
+  view(qb_pmr_ca)
+  
+
+
+
 
 
