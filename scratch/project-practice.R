@@ -173,7 +173,7 @@ moving_ags <- function(nutrient_data, weeks_break){
   nutrient_moving_ags <- rbind(nutrient_data_subset, nutrient_data_subset_sample_id)
 }
 
-moving_ags(qb_pmr, weeks_break = 9)
+#moving_ags(qb_pmr, weeks_break = 9)
 
 
 qb_pmr_2 <- qb_pmr  %>%
