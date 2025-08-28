@@ -3,3 +3,55 @@ title: "self-assessment"
 output: html_document
 ---
 
+# Automate
+
+#### ***Running the entire analysis requires rendering one Quarto document***
+
+Meets spec: The entire analysis (including methods and results) are all rendered into one uncleaned quarto doc.
+
+#### The analysis runs without errors
+
+Meets spec: There are no errors thrown when the analysis is run.
+
+#### ***The analysis produces the expected output***
+
+Not yet: The graphs produced from the rolling average concentration for each nutrient is slightly different compared to the original figure, especially for NH4, which is missing values post 1990.
+
+#### ***Data import/cleaning is handled in its own script(s)***
+Not yet: Data cleaning needs to be moved and organized to a new script. However, it is there in the "project_practice.R" script as spaghetti code.
+
+# Organize
+
+#### Raw data is contained in its own folder
+Meets spec: Raw data files are in the data folder.
+
+
+#### Intermediate outputs are created and saved to a separate folder from raw data
+Meets spec: Associated figures have been created and saved in the "figs" folder. 
+
+#### ***At least one piece of functionality has been refactored into a function in its own file***
+Not yet: There was a separate script in "scratch" that was used to source the moving_avg() function. However, it was accidentally deleted and needs to be recreated.
+
+# Document
+
+#### The repo has a README that explains where to find (1) data, (2) analysis script, (3) supporting code, and (4) outputs
+Not yet: ReadMe.md has been created but requires section for outputs and supporting code.
+
+#### ***The README includes a flowchart and text explaining how the analysis works***
+Not yet: Flowchart not yet included.
+
+#### ***The code is appropriately commented***
+Not yet: Many lines of code require comments.
+
+#### ***Variable and function names are descriptive and follow a consistent naming convention***
+Not yet: Most have appropriate names but some (ex. copy dataset) need to be renamed.
+
+# Scale
+
+#### Running the environment initialization script installs all required packages
+Meets spec: All required packages are installed and appropriately called.
+
+#### The analysis script runs without errors
+Meets spec: No errors are thrown.
+
+
