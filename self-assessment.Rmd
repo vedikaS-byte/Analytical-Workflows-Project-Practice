@@ -41,7 +41,8 @@ Not yet: ReadMe.md has been created but requires section for outputs and support
 Not yet: Flowchart not yet included.
 
 #### ***The code is appropriately commented***
-Not yet: Many lines of code require comments.
+Not yet: Many lines of code require comments. For example, the code for creating the mutated variable "moving_avg_nutrients" and the for loop for creating the separate graphs need to be properly commented.
+
 
 #### ***Variable and function names are descriptive and follow a consistent naming convention***
 Not yet: Most have appropriate names but some (ex. copy dataset) need to be renamed.
