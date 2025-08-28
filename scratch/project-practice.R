@@ -213,17 +213,79 @@ moving_avg <- function(focal_date, dates, conc, window_size) {
   result <- mean(window_conc, na.rm = T)
   return(result)
 }
+
+
+qb_pmr_test_1 <- qb_pmr %>% select(-moving_avg_fun)
+
+for(i in unique(qb_pmr_test_1$nutrients)) {
+  if(i == "K"){ 
+    qb_pmr_test_k <- sapply(X = qb_pmr_test_1$Sample_Date, moving_avg , dates = qb_pmr_test_1$Sample_Date, conc = qb_pmr_test_1$concentration, window_size = 9) 
+  }
+}
+
+qb_pmr_ma <- qb_pmr_test_1 %>%
+  group_by(Sample_ID, nutrients) %>%
+  arrange(Sample_Date) %>%
+  mutate(
+    moving_avg = sapply(
+      Sample_Date,
+      function(fd) moving_avg(fd, Sample_Date, concentration, window_size = 9) # example: 9-week window
+    )
+  ) %>%
+  ungroup()
+
+
+qb_pmr_ma <- qb_pmr_test_1 %>%
+  group_by(Sample_ID, nutrients) %>%
+  mutate(
+    moving_avg_nutrients = sapply(X = Sample_Date, 
+                        moving_avg, dates = as.Date(Sample_Date), conc = concentration, window_size = 9)) %>% ungroup()
+
+qb_pmr_ma %>% ggplot(aes(x = Sample_Date, y = moving_avg_nutrients, col = Sample_ID, group = Sample_ID)) + 
+  geom_line() + facet_wrap(~nutrients)
+
+library(ggplot2)
+
+# create list of nutrients (just want the levels)
+nutrient_list <- unique(qb_pmr_ma$nutrients)
+hugo <- as.Date("1989-09-21")
+for (i in nutrient_list) {
+  # i is not a position but a "type" of nutrient
+  plot_store <- qb_pmr_ma %>% mutate(year_sample = year(Sample_Date)) %>%
+    filter(nutrients == i, year_sample >= 1986 & year_sample <= 1996) %>%
+    ggplot(aes(x = Sample_Date, y = moving_avg_nutrients, col = Sample_ID, group = Sample_ID)) +
+    geom_line() +
+    labs(title = paste("Moving Average of", i),
+         y = "9 Wk Moving Average",
+         x = "Year") +
+    theme_bw()
+  print(plot_store) 
+
+
+  ggsave(filename = paste0("plot ", i, ".png"), path = here::here("figs"), plot = plot_store)
+  
+}
+# OR: make graphs separately and paste then using ggarrange
+
+
+
+view(qb_pmr_ma)
+
+
+
+str(qb_pmr_test_1)
 qb_pmr_k <-  qb_pmr %>% filter(nutrients == "K") 
   qb_pmr_k$moving_avg_k <- sapply(X = qb_pmr_k$Sample_Date, moving_avg , dates = qb_pmr_k$Sample_Date, conc = qb_pmr_k$concentration, 
        window_size = 9)
 
 qb_pmr_ca <-  qb_pmr %>% filter(nutrients == "Ca") 
-  qb_pmr_ca$moving_avg_ca <- sapply(X = qb_pmr_ca$Sample_Date, moving_avg , dates = qb_pmr_ca$Sample_Date, conc = qb_pmr_ca$concentration, 
+
+qb_pmr_ca$moving_avg_ca <- sapply(X = qb_pmr_ca$Sample_Date, moving_avg , dates = qb_pmr_ca$Sample_Date, conc = qb_pmr_ca$concentration, 
                                   window_size = 9) 
   
   
   
-  view(qb_pmr_k)
+  view(qb_pmr_test_k)
   view(qb_pmr_ca)
   
 
