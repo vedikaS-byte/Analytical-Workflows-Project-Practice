@@ -98,4 +98,5 @@ for (i in nutrient_list) {
    print(plot_store) 
   ggsave(filename = paste0("plot ", i, ".png"), path = here::here("figs"), plot = plot_store)
 }
+
 ```
