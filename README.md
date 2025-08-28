@@ -4,7 +4,7 @@ bibliography: references.bib
 
 # Analytical-Workflows-Project-Practice
 
-This project serves to replicate a prior figure completed by [@schaefer2000] based on data published by McDowell et al. (2024). Moving nine-week averages were created for each concentration of contaminants at different streams in Puerto Rico before and after Hurricane Hugo. The primary objective is to establish a reproducible workflow that is replicable for interested environmental enthusiasts.
+This project serves to replicate a prior figure completed by [@schaefer2000] based on data published by McDowell et al. (2024). Moving nine-week averages were created for each concentration of contaminants (hereby referred to as "nutrients") at different streams in Puerto Rico before and after Hurricane Hugo. The primary objective is to establish a reproducible workflow that is replicable for interested environmental enthusiasts.
 
 # Background
 
@@ -13,7 +13,7 @@ Hurricane Hugo (1989) greatly affected Puerto Rico's freshwater systems. The ext
 <img src="https://eds-214-workflows-reproducibility.github.io/course-materials/interactive/images/Schaefer_etal_2020_fig3.png"/>
 
 ## Data
-The data is publicly available 
+The data is publicly available on the EDI Data Portal and appears as separate files for each sampling site. For this analysis, 
 
 
 # Contents
