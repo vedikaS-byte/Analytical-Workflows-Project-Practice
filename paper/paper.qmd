@@ -91,7 +91,7 @@ for (i in nutrient_list) {
   # i is not a position but a "type" of nutrient
   plot_store <- qb_pmr_ma %>% mutate(year_sample = year(Sample_Date)) %>%
     filter(nutrients == i, year_sample >= 1988 & year_sample <= 1996) %>%
-    drop_na(moving_avg_nutrients) %>% facet_wrap(~factor(nutrients), )
+    drop_na(moving_avg_nutrients) %>% 
     ggplot(aes(x = Sample_Date, y = moving_avg_nutrients, col = Sample_ID, group = Sample_ID)) +
     geom_line() +
     labs(title = paste("Moving Average of", i),
