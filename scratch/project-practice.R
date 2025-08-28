@@ -306,7 +306,16 @@ qb_pmr_ca$moving_avg_ca <- sapply(X = qb_pmr_ca$Sample_Date, moving_avg , dates 
   view(qb_pmr_ca)
   
 
-
-
-
-
+##_________________________ flowchart
+  #install.packages("flowchart")
+# install.packages("igraph")
+# install.packages("showtext")
+# install.packages("rcartocolor")
+library(flowchart)
+library(igraph)  
+library(showtext)  
+library(rcartocolor)  
+  
+  
+  
+  
