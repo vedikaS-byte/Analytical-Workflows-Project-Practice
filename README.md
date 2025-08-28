@@ -12,9 +12,15 @@ Hurricane Hugo (1989) greatly affected Puerto Rico's freshwater systems. The ext
 
 <img src="https://eds-214-workflows-reproducibility.github.io/course-materials/interactive/images/Schaefer_etal_2020_fig3.png"/>
 
-## Data
-The data is publicly available on the EDI Data Portal and appears as separate files for each sampling site. For this analysis, 
+# Data
 
+The data is publicly available on the EDI Data Portal and appears as separate files for each sampling site. For this analysis, the "QuebradaCuenca1-Bisley.csv", "QuebradaCuenca2-Bisley.csv", "QuebradaCuenca3-Bisley.csv", and "RioMameyesPuenteRoto.csv" were downloaded for the Q1, Q2, Q3, and RMP sample sites. Each dataset contained the following shared columns necessary for the analysis:
+
+-   `Sample_Date`: The specific sample date stored as a "date" type in YYYY-MM-DD format. Sampling was not evenly spaced out; for example some samples were sometimes taken months apart.
+
+-   `Sample_ID`: The sample location, taken at four different locations in the Puerto Rico watershed.
+
+-   `nutrients`: Categorical variable storing each nutrient that was sampled at each site as levels. The original data files stored these
 
 # Contents
 
