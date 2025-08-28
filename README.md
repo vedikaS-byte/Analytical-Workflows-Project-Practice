@@ -12,6 +12,10 @@ Hurricane Hugo (1989) greatly affected Puerto Rico's freshwater systems. The ext
 
 <img src="https://eds-214-workflows-reproducibility.github.io/course-materials/interactive/images/Schaefer_etal_2020_fig3.png"/>
 
+## Data
+The data is publicly available 
+
+
 # Contents
 
 -   \scratch: Remote functions used for calculations are stored here. Currently, the primary script "project-practice.R" is stored here.

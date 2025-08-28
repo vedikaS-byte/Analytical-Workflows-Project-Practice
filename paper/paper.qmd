@@ -3,14 +3,16 @@ title: "paper"
 format: 
   html: 
     output-file: "index.html"
-
 ---
 
-# Background 
-Hurricane Hugo (1989) greatly affected Puerto Rico's freshwater systems. The extent of the hurricane's impact can be visualized as moving averages (smoothed estimations) of changes in concentrations of contaminants over time at differently sampled streams. This can be replicated from an existing figure created by Schaefer et al. (2020). 
+# Background
 
-# Data 
-The dataset .
+Hurricane Hugo (1989) greatly affected Puerto Rico's freshwater systems. The extent of the hurricane's impact can be visualized as moving averages (smoothed estimations) of changes in concentrations of contaminants over time at differently sampled streams. This can be replicated from an existing figure created by Schaefer et al. (2020).
+
+# Data
+
+The data is publicly available on the EDI Data Portal and appears as separate files for each sampling site. For this analysis, the "QuebradaCuenca1-Bisley", "QuebradaCuenca2-Bisley", "QuebradaCuenca3-Bisley", and "RioMameyesPuenteRoto.csv" were downloaded for the Q1, Q2, Q3, and RMP sample sites. Each file was read in from the data folder and were fully joined to create a single unique dataset called "qb_pmr."
+
 ```{r}
 library(tidyverse)
 qb1 <- read_csv(here::here("data", "QuebradaCuenca1-Bisley.csv"))
@@ -28,9 +30,8 @@ head(qb_pmr, head = 5)
 
 ```
 
-
 # Methods
-
+The combine dataset 
 ```{r}
 # tidy 
 # select variables needed
@@ -74,8 +75,8 @@ qb_pmr_ma <- qb_pmr_test_1 %>%
   mutate(moving_avg_nutrients = sapply(X = Sample_Date, moving_avg, dates = as.Date(Sample_Date), conc = concentration, window_size = 9)) %>% ungroup()
 ```
 
-
 # Results
+
 ```{r}
 # look at the first six rows 
 head(qb_pmr_ma)
@@ -89,8 +90,8 @@ hugo <- as.Date("1989-09-21")
 for (i in nutrient_list) {
   # i is not a position but a "type" of nutrient
   plot_store <- qb_pmr_ma %>% mutate(year_sample = year(Sample_Date)) %>%
-    filter(nutrients == i, year_sample >= 1988 & year_sample <= 2000) %>%
-    drop_na() %>%
+    filter(nutrients == i, year_sample >= 1988 & year_sample <= 1996) %>%
+    drop_na(moving_avg_nutrients) %>% facet_wrap(~factor(nutrients), )
     ggplot(aes(x = Sample_Date, y = moving_avg_nutrients, col = Sample_ID, group = Sample_ID)) +
     geom_line() +
     labs(title = paste("Moving Average of", i),
@@ -99,7 +100,38 @@ for (i in nutrient_list) {
     theme_bw() + geom_vline(xintercept = hugo, linetype = "dashed", col = "red") 
  
    print(plot_store) 
-  ggsave(filename = paste0("plot ", i, ".png"), path = here::here("figs"), plot = plot_store)
+  # ggsave(filename = paste0("plot ", i, ".png"), path = here::here("figs"), plot = plot_store)
 }
 
+
+# # create subset to see where most nans are
+ # qb_pmr_ma %>% filter(moving_avg_nutrients != is.nan(qb_pmr_ma$moving_avg_nutrients), nutrients == "NH4-N") %>% #drop_na(moving_avg_nutrients) %>%
+ #    ggplot(aes(x = Sample_Date, y = moving_avg_nutrients, col = Sample_ID, group = Sample_ID)) +
+ #    geom_line() +
+ #    # labs(title = paste("Moving Average of", i),
+ #    #      y = "9 Wk Moving Average",
+ #    #      x = "Year", caption = "Hurricane Hugo (marked by the dashed line) occurred around 09/21/1989.") +
+ #    theme_bw() + geom_vline(xintercept = hugo, linetype = "dashed", col = "red")
+ 
+qb_pmr_ma %>% mutate(year_sample = year(Sample_Date)) %>%
+    filter(year_sample >= 1988 & year_sample <= 1998) %>%
+    drop_na(moving_avg_nutrients) %>%  
+    ggplot(aes(x = Sample_Date, y = moving_avg_nutrients, col = Sample_ID, group = Sample_ID)) +
+    geom_line() + theme_bw() + 
+    labs(title = "Nine Week Moving Averages of Nutrients/Contaminants (1988-1998)",
+         y = "Moving Average (nine weeks)",
+         x = "Year", caption = "Hurricane Hugo (marked by the dashed line) occurred around 09/21/1989.") + facet_wrap(~factor(nutrients), scales = "free_y") + geom_vline(xintercept = hugo, linetype = "dashed", col = "red") 
+ 
+
+
+ 
 ```
+
+
+
+
+
+
+
+
+
