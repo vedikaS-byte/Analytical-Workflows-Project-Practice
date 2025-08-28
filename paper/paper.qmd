@@ -1,0 +1,109 @@
+---
+title: "paper"
+format: html
+---
+
+# Background 
+Hurricane Hugo (1989) greatly affected Puerto Rico's freshwater systems. The extent of the hurricane's impact can be visualized as moving averages (smoothed estimations) of changes in concentrations of contaminants over time at differently sampled streams. This can be replicated from an existing figure created by Schaefer et al. (2020). 
+
+# Data 
+The dataset .
+```{r}
+library(tidyverse)
+qb1 <- read_csv(here::here("data", "QuebradaCuenca1-Bisley.csv"))
+qb2 <- read_csv(here::here("data", "QuebradaCuenca2-Bisley.csv"))
+qb3 <- read_csv(here::here("data", "QuebradaCuenca3-Bisley.csv"))
+pmr <- read_csv(here::here("data", "RioMameyesPuenteRoto.csv"))
+
+
+qb <- qb1 %>% full_join(qb2)
+qb <- qb %>% full_join(qb3)
+qb_pmr <- qb %>% full_join(pmr)
+
+str(qb_pmr)
+head(qb_pmr, head = 5)
+
+```
+
+
+# Methods
+
+```{r}
+# tidy 
+# select variables needed
+
+qb_pmr <-  qb_pmr %>% pivot_longer(cols = c("K", "NO3-N", "Mg", "Ca","NH4-N"), names_to = "nutrients", values_to = "concentration") %>% select(Sample_Date, nutrients, concentration, Sample_ID)
+colnames(qb_pmr)
+
+
+## groupby nutrients and create moving averages
+qb_pmr <- qb_pmr %>% mutate(year_sample = year(Sample_Date), month_year = format(Sample_Date, "%Y-%m"), day_of_year= yday(Sample_Date), week_sample = week(Sample_Date))
+
+## isolate for neccessary years
+
+
+```
+
+```{r}
+## function moving_avg 
+
+moving_avg <- function(focal_date, dates, conc, window_size) {
+  #which dates are in the window? subset these dates 
+  #dates <- as.Date(dates)
+  is_in_window <- (dates > focal_date - (window_size/2)*7)  & # tell me when dates are greater than focal date offset by half of window 
+    (dates < focal_date + (window_size/2)*7)
+  
+  # find associated concentrations
+  window_conc <- conc[is_in_window] # pull out associated concentrations
+  
+  # calculate mean
+  result <- mean(window_conc, na.rm = T)
+  return(result)
+}
+
+```
+
+```{r}
+# call moving_avg on qb_pmr and create a new column to store associated moving_avg concentrations with each nutrient in a single column 
+qb_pmr_test_1 <- qb_pmr
+qb_pmr_ma <- qb_pmr_test_1 %>%
+  group_by(Sample_ID, nutrients) %>%
+  mutate(moving_avg_nutrients = sapply(X = Sample_Date, moving_avg, dates = as.Date(Sample_Date), conc = concentration, window_size = 9)) %>% ungroup()
+```
+
+
+# Results
+```{r}
+# look at the first six rows 
+head(qb_pmr_ma)
+
+# graph them with for loop
+# create list of nutrients (just want the levels)
+nutrient_list <- unique(qb_pmr_ma$nutrients)
+hugo <- as.Date("1989-09-21")
+#?geom_vline
+
+for (i in nutrient_list) {
+  # i is not a position but a "type" of nutrient
+  plot_store <- qb_pmr_ma %>% mutate(year_sample = year(Sample_Date)) %>%
+    filter(nutrients == i, year_sample >= 1988 & year_sample <= 2000) %>%
+    drop_na() %>%
+    ggplot(aes(x = Sample_Date, y = moving_avg_nutrients, col = Sample_ID, group = Sample_ID)) +
+    geom_line() +
+    labs(title = paste("Moving Average of", i),
+         y = "9 Wk Moving Average",
+         x = "Year", caption = "Hurricane Hugo (marked by the dashed line) occurred around 09/21/1989.") + 
+    theme_bw() + geom_vline(xintercept = hugo, linetype = "dashed", col = "red") 
+ 
+   print(plot_store) 
+  ggsave(filename = paste0("plot ", i, ".png"), path = here::here("figs"), plot = plot_store)
+}
+```
+
+
+
+
+
+
+
+

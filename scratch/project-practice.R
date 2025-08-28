@@ -225,11 +225,11 @@ for(i in unique(qb_pmr_test_1$nutrients)) {
 
 qb_pmr_ma <- qb_pmr_test_1 %>%
   group_by(Sample_ID, nutrients) %>%
-  arrange(Sample_Date) %>%
+  #arrange(Sample_Date) %>%
   mutate(
     moving_avg = sapply(
       Sample_Date,
-      function(fd) moving_avg(fd, Sample_Date, concentration, window_size = 9) # example: 9-week window
+      function(fd) moving_avg(fd, Sample_Date, concentration, window_size = 9) 
     )
   ) %>%
   ungroup()
@@ -237,29 +237,43 @@ qb_pmr_ma <- qb_pmr_test_1 %>%
 
 qb_pmr_ma <- qb_pmr_test_1 %>%
   group_by(Sample_ID, nutrients) %>%
-  mutate(
-    moving_avg_nutrients = sapply(X = Sample_Date, 
-                        moving_avg, dates = as.Date(Sample_Date), conc = concentration, window_size = 9)) %>% ungroup()
+  mutate(moving_avg_nutrients = sapply(X = Sample_Date, moving_avg, dates = as.Date(Sample_Date), conc = concentration, window_size = 9)) %>% ungroup()
 
 qb_pmr_ma %>% ggplot(aes(x = Sample_Date, y = moving_avg_nutrients, col = Sample_ID, group = Sample_ID)) + 
   geom_line() + facet_wrap(~nutrients)
+
+unique(qb_pmr_ma$nutrients)
+
+qb_pmr_ma %>% mutate(year_sample = year(Sample_Date)) %>% drop_na() %>%
+  filter(nutrients == "NH4-N", year_sample >= 1986 & year_sample <= 2000) %>%ggplot(aes(x = Sample_Date, y = moving_avg_nutrients, col = Sample_ID, group = Sample_ID)) +
+  geom_line() +
+  labs(title = paste("Moving Average of", i),
+       y = "9 Wk Moving Average",
+       x = "Year") + 
+  theme_bw() + geom_vline(xintercept = hugo, linetype = "dashed", col = "red") 
+
+  
 
 library(ggplot2)
 
 # create list of nutrients (just want the levels)
 nutrient_list <- unique(qb_pmr_ma$nutrients)
 hugo <- as.Date("1989-09-21")
+#?geom_vline
+
 for (i in nutrient_list) {
   # i is not a position but a "type" of nutrient
   plot_store <- qb_pmr_ma %>% mutate(year_sample = year(Sample_Date)) %>%
-    filter(nutrients == i, year_sample >= 1986 & year_sample <= 1996) %>%
+    filter(nutrients == i, year_sample >= 1988 & year_sample <= 2000) %>%
+    drop_na() %>%
     ggplot(aes(x = Sample_Date, y = moving_avg_nutrients, col = Sample_ID, group = Sample_ID)) +
     geom_line() +
     labs(title = paste("Moving Average of", i),
          y = "9 Wk Moving Average",
-         x = "Year") +
-    theme_bw()
-  print(plot_store) 
+         x = "Year") + 
+    theme_bw() + geom_vline(xintercept = hugo, linetype = "dashed", col = "red") 
+ 
+   print(plot_store) 
 
 
   ggsave(filename = paste0("plot ", i, ".png"), path = here::here("figs"), plot = plot_store)
