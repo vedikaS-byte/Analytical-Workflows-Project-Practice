@@ -28,10 +28,14 @@ qb_pmr <- qb %>% full_join(pmr)
 str(qb_pmr)
 head(qb_pmr, head = 5)
 
+source(here("R", "moving_average.R"))
+
 ```
 
 # Methods
-The combine dataset 
+
+The combine dataset
+
 ```{r}
 # tidy 
 # select variables needed
@@ -48,24 +52,7 @@ qb_pmr <- qb_pmr %>% mutate(year_sample = year(Sample_Date), month_year = format
 
 ```
 
-```{r}
-## function moving_avg 
-
-moving_avg <- function(focal_date, dates, conc, window_size) {
-  #which dates are in the window? subset these dates 
-  #dates <- as.Date(dates)
-  is_in_window <- (dates > focal_date - (window_size/2)*7)  & # tell me when dates are greater than focal date offset by half of window 
-    (dates < focal_date + (window_size/2)*7)
-  
-  # find associated concentrations
-  window_conc <- conc[is_in_window] # pull out associated concentrations
-  
-  # calculate mean
-  result <- mean(window_conc, na.rm = T)
-  return(result)
-}
-
-```
+Check my moving average function in `R\moving_avg.R` or  `moving_avg()` [https://github.com/vedikaS-byte/Analytical-Workflows-Project-Practice/blob/main/R/moving_avg.R]
 
 ```{r}
 # call moving_avg on qb_pmr and create a new column to store associated moving_avg concentrations with each nutrient in a single column 
@@ -124,12 +111,3 @@ qb_pmr_ma %>% mutate(year_sample = year(Sample_Date)) %>%
 
  
 ```
-
-
-
-
-
-
-
-
-
