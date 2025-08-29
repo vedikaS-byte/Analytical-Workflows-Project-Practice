@@ -35,7 +35,7 @@ A new column called `moving_avg_nutrients` was created by calling `sapply()` to 
 qb_mpr_ma <- readRDS(here::here("output", "qb_mpr_ma.rds"))
 ```
 
-# Results
+# Results 
 
 Taking a look at the new moving average data set, it is noticeable that `NaN` are persistent occurrences for NH4-N. It is possible that this is a result of inconsistent sampling, human error, technique error, or other confounding influence that disrupted the sampling process in retaining an actual value. As a result, moving averages were not calculated for several years for NH4-N; it is difficult to tell the results of Hurricane Hugo on this contaminant alone.
 
