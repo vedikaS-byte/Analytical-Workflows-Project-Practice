@@ -14,16 +14,20 @@ Hurricane Hugo (1989) greatly affected Puerto Rico's freshwater systems. The ext
 
 # Data
 
-The data is publicly available on the EDI Data Portal and appears as separate files for each sampling site. For this analysis, the "QuebradaCuenca1-Bisley", "QuebradaCuenca2-Bisley", "QuebradaCuenca3-Bisley", and "RioMameyesPuenteRoto.csv" were downloaded for the Q1, Q2, Q3, and MPR sample sites. Each file was read in from the data folder and were fully joined to create a single unique data set called `qb_mpr`.
+The data is publicly available on the EDI Data Portal and appears as separate files for each sampling site. For this analysis, the "QuebradaCuenca1-Bisley", "QuebradaCuenca2-Bisley", "QuebradaCuenca3-Bisley", and "RioMameyesPuenteRoto.csv" were downloaded for the Q1, Q2, Q3, and MPR sample sites. Each file was read in from the data folder and were fully joined to create a single unique data set called `qb_mpr`. 
 
 ```{r}
-#|echo: false
+#| warning: false
+#| message: false
 #load the tidyverse for data cleaning 
-library(tidyverse)
+library(tidyverse, warn.conflicts = F)
+library(lubridate, warn.conflicts = F)
+library(ggplot2, warn.conflicts = F)
 ```
 
 
 ```{r}
+#| warning: false
 #load each data set individually
 qb1 <- read_csv(here::here("data", "QuebradaCuenca1-Bisley.csv"))
 qb2 <- read_csv(here::here("data", "QuebradaCuenca2-Bisley.csv"))
@@ -36,6 +40,7 @@ qb <- qb %>% full_join(qb3)
 qb_mpr <- qb %>% full_join(mpr)
 
 head(qb_mpr, head = 5) # what do the first five rows look like?
+# note the NAs, these will be handled when calculating the moving averages with na.rm = T
 ```
 
 # Methods
@@ -89,7 +94,7 @@ hugo <- as.Date("1989-09-21") # store approximate date for hurricane as date typ
 
 plot_facet <- qb_mpr_ma %>% mutate(year_sample = year(Sample_Date)) %>%
     filter(year_sample >= 1988 & year_sample <= 1998) %>%
-   # drop_na(moving_avg_nutrients) %>%  
+   # drop_na(moving_avg_nutrients) %>%  # dropping NAs actually caused larger gaps in the data, ggplot automatically removes these
     ggplot(aes(x = Sample_Date, y = moving_avg_nutrients, col = Sample_ID, group = Sample_ID)) +
     geom_line() + theme_bw() + 
     labs(title = "Nine Week Moving Averages of Nutrients/Contaminants (1988-1998)",
@@ -118,7 +123,6 @@ for (i in nutrient_list) {
   # i is not a position but a "type" of nutrient
   plot_store <- qb_mpr_ma %>% mutate(year_sample = year(Sample_Date)) %>%
     filter(nutrients == i, year_sample >= 1988 & year_sample <= 1998) %>%
-    #drop_na(moving_avg_nutrients) %>% 
     ggplot(aes(x = Sample_Date, y = moving_avg_nutrients, col = Sample_ID, group = Sample_ID)) +
     geom_line() +
     labs(title = paste("Moving Average of", i),
