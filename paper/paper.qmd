@@ -5,6 +5,7 @@ format:
     output-file: "index.html"
 editor_options: 
   chunk_output_type: console
+ 
 ---
 
 # Background
@@ -16,9 +17,13 @@ Hurricane Hugo (1989) greatly affected Puerto Rico's freshwater systems. The ext
 The data is publicly available on the EDI Data Portal and appears as separate files for each sampling site. For this analysis, the "QuebradaCuenca1-Bisley", "QuebradaCuenca2-Bisley", "QuebradaCuenca3-Bisley", and "RioMameyesPuenteRoto.csv" were downloaded for the Q1, Q2, Q3, and MPR sample sites. Each file was read in from the data folder and were fully joined to create a single unique data set called `qb_mpr`.
 
 ```{r}
+#|echo: false
 #load the tidyverse for data cleaning 
 library(tidyverse)
+```
 
+
+```{r}
 #load each data set individually
 qb1 <- read_csv(here::here("data", "QuebradaCuenca1-Bisley.csv"))
 qb2 <- read_csv(here::here("data", "QuebradaCuenca2-Bisley.csv"))
@@ -48,6 +53,8 @@ qb_mpr <- qb_mpr %>% mutate(year_sample = year(Sample_Date))
 
 ```
 
+A major component of this project involved minimizing the moving average calculation to a single date before applying the process over the entire range of sample dates. A single 
+
 `moving_avg()`was locally sourced from `R\moving_avg.R`. The associated syntax is located in the `moving_avg.R` script. The function takes a singular focal date (index) in `Sample_Date` and checks whether sample dates before and after that focal date are within 4.5 weeks of each other to calculate a centered average for that nutrient. The function was written to include `window_size`, a parameter adjusting for the desired length required to calculate a moving average. Additional information is linked [here](https://github.com/vedikaS-byte/Analytical-Workflows-Project-Practice/blob/main/R/moving_avg.R).
 
 ```{r}
@@ -73,10 +80,12 @@ Taking a look at the new moving average data set, it is noticeable that `NaN` ar
 head(qb_mpr_ma)
 ```
 
-The data was visualized over a decade (1988-1998) to better visualize assess trends in contaminant concentration over time. Calcium, potassium, magnesium, and nitrate all increased in concentration following Hurricane Hugo. Calcium was most abundant at MPR, Q3 had high mean concentrations of magnesium and potassium post-hurricane, and nitrate was particularly highly concentrated at Q2 and Q3.
+The data was visualized over a decade (1988-1998) to better visualize assess trends in contaminant concentration over time. An approximate date of 9/21/1989 was selected for Hurricane Hugo's impact on Puerto Rico and was referenced as a date type for the x-intercept in `geom_vline()`. Calcium, potassium, magnesium, and nitrate all increased in concentration following Hurricane Hugo. Calcium was most abundant at MPR, Q3 had high mean concentrations of magnesium and potassium post-hurricane, and nitrate was particularly highly concentrated at Q2 and Q3.
 
 ```{r}
-qb_mpr_ma %>% mutate(year_sample = year(Sample_Date)) %>%
+hugo <- as.Date("1989-09-21") # store approximate date for hurricane as date type for x-intercept reference in geom_vline()
+
+plot_facet <- qb_mpr_ma %>% mutate(year_sample = year(Sample_Date)) %>%
     filter(year_sample >= 1988 & year_sample <= 1998) %>%
    # drop_na(moving_avg_nutrients) %>%  
     ggplot(aes(x = Sample_Date, y = moving_avg_nutrients, col = Sample_ID, group = Sample_ID)) +
@@ -89,13 +98,19 @@ qb_mpr_ma %>% mutate(year_sample = year(Sample_Date)) %>%
     plot.title = element_text(size = 14, face = "bold"),
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
+
+
+plot_facet
+
+
+ggsave(filename = paste0("plot_facet.png"), path = here::here("figs"), plot = plot_facet)
 ```
 
 ```{r}
 # graph them with for loop
 # create list of nutrients (just want the levels)
 nutrient_list <- unique(qb_mpr_ma$nutrients)
-
+hugo <- as.Date("1989-09-20")
 for (i in nutrient_list) {
   # i is not a position but a "type" of nutrient
   plot_store <- qb_mpr_ma %>% mutate(year_sample = year(Sample_Date)) %>%
@@ -112,3 +127,5 @@ for (i in nutrient_list) {
   ggsave(filename = paste0("plot ", i, ".png"), path = here::here("figs"), plot = plot_store)
 }
 ```
+
+![](images/plot_facet.png)

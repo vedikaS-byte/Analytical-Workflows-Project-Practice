@@ -50,12 +50,18 @@ The `tidyverse` package was used to perform data tidying and wrangling to simpli
 
 `moving_avg()`was locally sourced from `R\moving_avg.R`. The associated syntax is located in the `moving_avg.R` script. The function takes a singular focal date (index) in `Sample_Date` and checks whether sample dates before and after that focal date are within 4.5 weeks of each other to calculate a centered average for that nutrient. The function was written to include `window_size`, a parameter adjusting for the desired length required to calculate a moving average. Additional information is linked [here](https://github.com/vedikaS-byte/Analytical-Workflows-Project-Practice/blob/main/R/moving_avg.R).
 
-A major component of this project involved minimizing the moving average calculation to a single date before applying the process over the entire range of sample dates. [FINISH]
-
 A new column called `moving_avg_nutrients` was created by calling `sapply()` to apply `moving_avg()` to every nutrient in the data set. `Sample_Date` stored the sampled dates, concentration was set to `conc`, and the `window_size` was specified for nine weeks. A new data set called `qb_mpr_ma` was created to store `moving_avg_nutrients` and was used in recreating the visualization. All associated figures are included in `figs`.
 
 ![](figs/flowchart.png)
 
+# Results & Output
+
+The resulting faceted graph was produced from the analysis. Generally, MPR had higher average concentrations of calcium, while Q3 had higher average concentrations of potassium, magnesium, and nitrate in the years following Hurricane Hugo. Increased rainfall, pollution, and drought are potential external influences of fluctuating averaged concentrations in the decade following Hurricane Hugo. Note that an exact match was not possible for moving averaged concentrations of NH4-N due to confounding factors, such as missing concentrations for sampling dates and resulting `NaN` types from the moving average calculation. As a result, future improvements to `moving_avg()` may be included to enhance the accuracy of mean calculations for specified intervals.
+
+![](figs/plot_facet.png)
+
 # Citation
 
 McDowell, William H., and USDA Forest Service. International Institute Of Tropical Forestry (IITF). 2024. “Chemistry of Stream Water from the Luquillo Mountains.” Environmental Data Initiative. <https://doi.org/10.6073/PASTA/F31349BEBDC304F758718F4798D25458>.
+
+Schaefer, Douglas. A., William H. McDowell, Fredrick N. Scatena, and Clyde E. Asbury. 2000. “Effects of Hurricane Disturbance on Stream Water Concentrations and Fluxes in Eight Tropical Forest Watersheds of the Luquillo Experimental Forest, Puerto Rico.” *Journal of Tropical Ecology* 16 (2): 189–207. <https://doi.org/10.1017/s0266467400001358>.

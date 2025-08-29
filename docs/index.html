@@ -102,8 +102,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>Data</h1>
 <p>The data is publicly available on the EDI Data Portal and appears as separate files for each sampling site. For this analysis, the “QuebradaCuenca1-Bisley”, “QuebradaCuenca2-Bisley”, “QuebradaCuenca3-Bisley”, and “RioMameyesPuenteRoto.csv” were downloaded for the Q1, Q2, Q3, and MPR sample sites. Each file was read in from the data folder and were fully joined to create a single unique data set called <code>qb_mpr</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#load the tidyverse for data cleaning </span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#|echo: false</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#load the tidyverse for data cleaning </span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ✔ dplyr     1.1.4     ✔ readr     2.1.5
@@ -116,6 +117,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 ✖ dplyr::lag()    masks stats::lag()
 ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
 </div>
+</div>
+<div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#load each data set individually</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>qb1 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"QuebradaCuenca1-Bisley.csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
@@ -200,93 +203,7 @@ DIC, TDN, TDP, SiO2, DON, ChlorideCode, NitrateCode, SulfateCode, SodiumCode,
 PotassiumCode, MagnesiumCode, CalciumCode, NH4Code, PO4Code, DOCCode, DICCode,
 TDNCode, SiO2Code, DONCode, TSS, Turbidity)`</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(qb_mpr) <span class="co"># check out the structure</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>spc_tbl_ [7,177 × 39] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
- $ Sample_ID    : chr [1:7177] "Q1" "Q1" "Q1" "Q1" ...
- $ Code         : num [1:7177] 1e+08 1e+08 1e+08 1e+08 1e+08 ...
- $ Sample_Date  : Date[1:7177], format: "1986-05-20" "1986-05-27" ...
- $ Sample_Time  : num [1:7177] NA NA NA 1302 1124 ...
- $ Gage_Ht      : num [1:7177] NA NA NA NA NA NA NA NA NA NA ...
- $ Temp         : num [1:7177] NA NA NA 24 23 23 22 22 22 22 ...
- $ pH           : num [1:7177] 7.35 7.48 7.36 7.39 7.34 7.45 7.36 7.36 7.15 7.25 ...
- $ Cond         : num [1:7177] 90.1 85.4 85.4 88.5 91.4 87.7 74.8 83 43.9 80.5 ...
- $ Cl           : num [1:7177] 8.2 NA NA 8.7 8.5 8.5 7.8 8.5 6.4 8.4 ...
- $ NO3-N        : num [1:7177] 118 109 114 124 NA NA 103 153 264 158 ...
- $ SO4-S        : num [1:7177] 1.75 1.74 NA NA NA NA NA NA NA NA ...
- $ Na           : num [1:7177] 7.81 8 7.95 8.39 8.55 8.7 7.12 8.33 4.33 7.94 ...
- $ K            : num [1:7177] 0.81 0.82 0.82 0.65 0.62 0.64 0.69 0.68 0.77 0.66 ...
- $ Mg           : num [1:7177] 3.04 3.13 3.15 2.73 2.86 2.8 2.4 2.66 1.19 2.43 ...
- $ Ca           : num [1:7177] 4.26 3.17 4.38 4.91 4.6 4.45 3.93 3.95 2.11 3.95 ...
- $ NH4-N        : num [1:7177] NA NA NA 10 40 10 47 20 NA 16 ...
- $ PO4-P        : num [1:7177] NA NA NA NA NA NA NA NA NA NA ...
- $ DOC          : num [1:7177] NA NA NA 0.3 0.44 0.24 1.37 NA 5.77 0.52 ...
- $ DIC          : num [1:7177] NA NA NA 6.52 8.1 4.88 6.21 8.23 3.18 7.59 ...
- $ TDN          : num [1:7177] NA NA NA NA NA NA NA NA NA NA ...
- $ TDP          : logi [1:7177] NA NA NA NA NA NA ...
- $ SiO2         : num [1:7177] NA NA NA 35.3 35.5 35.1 29.8 33.5 12.3 31.8 ...
- $ DON          : num [1:7177] NA NA NA NA NA NA NA NA NA NA ...
- $ ChlorideCode : logi [1:7177] NA NA NA NA NA NA ...
- $ NitrateCode  : chr [1:7177] NA NA NA NA ...
- $ SulfateCode  : chr [1:7177] NA NA NA NA ...
- $ SodiumCode   : logi [1:7177] NA NA NA NA NA NA ...
- $ PotassiumCode: chr [1:7177] NA NA NA NA ...
- $ MagnesiumCode: logi [1:7177] NA NA NA NA NA NA ...
- $ CalciumCode  : logi [1:7177] NA NA NA NA NA NA ...
- $ NH4Code      : chr [1:7177] NA NA NA NA ...
- $ PO4Code      : chr [1:7177] NA NA NA NA ...
- $ DOCCode      : chr [1:7177] NA NA NA NA ...
- $ DICCode      : logi [1:7177] NA NA NA NA NA NA ...
- $ TDNCode      : chr [1:7177] NA NA NA NA ...
- $ SiO2Code     : chr [1:7177] NA NA NA NA ...
- $ DONCode      : chr [1:7177] NA NA NA NA ...
- $ TSS          : num [1:7177] NA NA NA NA 21.7 ...
- $ Turbidity    : logi [1:7177] NA NA NA NA NA NA ...
- - attr(*, "spec")=
-  .. cols(
-  ..   Sample_ID = col_character(),
-  ..   Code = col_double(),
-  ..   Sample_Date = col_date(format = ""),
-  ..   Sample_Time = col_double(),
-  ..   Gage_Ht = col_double(),
-  ..   Temp = col_double(),
-  ..   pH = col_double(),
-  ..   Cond = col_double(),
-  ..   Cl = col_double(),
-  ..   `NO3-N` = col_double(),
-  ..   `SO4-S` = col_double(),
-  ..   Na = col_double(),
-  ..   K = col_double(),
-  ..   Mg = col_double(),
-  ..   Ca = col_double(),
-  ..   `NH4-N` = col_double(),
-  ..   `PO4-P` = col_double(),
-  ..   DOC = col_double(),
-  ..   DIC = col_double(),
-  ..   TDN = col_double(),
-  ..   TDP = col_logical(),
-  ..   SiO2 = col_double(),
-  ..   DON = col_double(),
-  ..   ChlorideCode = col_logical(),
-  ..   NitrateCode = col_character(),
-  ..   SulfateCode = col_character(),
-  ..   SodiumCode = col_logical(),
-  ..   PotassiumCode = col_logical(),
-  ..   MagnesiumCode = col_logical(),
-  ..   CalciumCode = col_logical(),
-  ..   NH4Code = col_character(),
-  ..   PO4Code = col_character(),
-  ..   DOCCode = col_character(),
-  ..   DICCode = col_logical(),
-  ..   TDNCode = col_character(),
-  ..   SiO2Code = col_logical(),
-  ..   DONCode = col_character(),
-  ..   TSS = col_double(),
-  ..   Turbidity = col_logical()
-  .. )
- - attr(*, "problems")=&lt;externalptr&gt; </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(qb_mpr, <span class="at">head =</span> <span class="dv">5</span>) <span class="co"># what do the first five rows look like?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(qb_mpr, <span class="at">head =</span> <span class="dv">5</span>) <span class="co"># what do the first five rows look like?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 39
   Sample_ID      Code Sample_Date Sample_Time Gage_Ht  Temp    pH  Cond    Cl
@@ -311,32 +228,35 @@ TDNCode, SiO2Code, DONCode, TSS, Turbidity)`</code></pre>
 <h1>Methods</h1>
 <p>The <code>tidyverse</code> package was used to perform data tidying and wrangling to simplify the analysis. It was necessary to perform <code>pivot_longer()</code> to group all nutrients under a shared column and store the concentration values separately in order to create a singular column for associated moving averages. <code>Sample_Date, nutrients, concentration,</code> and <code>Sample_ID</code> were selected to perform the moving average analysis, where each nutrient would have an associated moving average concentration for a specific sampling date based on the original concentration. Additionally, a new variable <code>year_sample</code> was created by pulling the year from the sampling date for the ease of filtering during visualization.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># select variables needed</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>qb_mpr <span class="ot">&lt;-</span>  qb_mpr <span class="sc">%&gt;%</span> <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"K"</span>, <span class="st">"NO3-N"</span>, <span class="st">"Mg"</span>, <span class="st">"Ca"</span>,<span class="st">"NH4-N"</span>), <span class="at">names_to =</span> <span class="st">"nutrients"</span>, <span class="at">values_to =</span> <span class="st">"concentration"</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(Sample_Date, nutrients, concentration, Sample_ID)</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(qb_mpr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># select variables needed</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>qb_mpr <span class="ot">&lt;-</span>  qb_mpr <span class="sc">%&gt;%</span> <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"K"</span>, <span class="st">"NO3-N"</span>, <span class="st">"Mg"</span>, <span class="st">"Ca"</span>,<span class="st">"NH4-N"</span>), <span class="at">names_to =</span> <span class="st">"nutrients"</span>, <span class="at">values_to =</span> <span class="st">"concentration"</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(Sample_Date, nutrients, concentration, Sample_ID)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(qb_mpr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Sample_Date"   "nutrients"     "concentration" "Sample_ID"    </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="do">## create new variable year_sample to pull year from sample_date for easy filtering later</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>qb_mpr <span class="ot">&lt;-</span> qb_mpr <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">year_sample =</span> <span class="fu">year</span>(Sample_Date))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="do">## create new variable year_sample to pull year from sample_date for easy filtering later</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>qb_mpr <span class="ot">&lt;-</span> qb_mpr <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">year_sample =</span> <span class="fu">year</span>(Sample_Date))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>was locally sourced from Check my moving average function in <code>R\moving_avg.R</code> or <code>moving_avg()</code> [https://github.com/vedikaS-byte/Analytical-Workflows-Project-Practice/blob/main/R/moving_avg.R]</p>
+<p>A major component of this project involved minimizing the moving average calculation to a single date before applying the process over the entire range of sample dates. By singling</p>
+<p><code>moving_avg()</code>was locally sourced from <code>R\moving_avg.R</code>. The associated syntax is located in the <code>moving_avg.R</code> script. The function takes a singular focal date (index) in <code>Sample_Date</code> and checks whether sample dates before and after that focal date are within 4.5 weeks of each other to calculate a centered average for that nutrient. The function was written to include <code>window_size</code>, a parameter adjusting for the desired length required to calculate a moving average. Additional information is linked <a href="https://github.com/vedikaS-byte/Analytical-Workflows-Project-Practice/blob/main/R/moving_avg.R">here</a>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># source moving_avg() locally from R folder</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"R"</span>, <span class="st">"moving_avg.R"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># source moving_avg() locally from R folder</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"scratch"</span>, <span class="st">"moving_avg.R"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>A new column called <code>moving_avg_nutrients</code> was created by calling <code>sapply()</code> to apply <code>moving_avg()</code> to every nutrient in the data set. <code>Sample_Date</code> stored the sampled dates, concentration was set to <code>conc</code>, and the <code>window_size</code> was specified for nine weeks. A new data set called <code>qb_mpr_ma</code> was created to store <code>moving_avg_nutrients</code> and was used in recreating the visualization.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># call moving_avg on qb_mpr and create a new column to store associated moving_avg concentrations with each nutrient in a single column </span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>qb_mpr_ma <span class="ot">&lt;-</span> qb_mpr <span class="sc">%&gt;%</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Sample_ID, nutrients) <span class="sc">%&gt;%</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">moving_avg_nutrients =</span> <span class="fu">sapply</span>(<span class="at">X =</span> Sample_Date, moving_avg, <span class="at">dates =</span> <span class="fu">as.Date</span>(Sample_Date), <span class="at">conc =</span> concentration, <span class="at">window_size =</span> <span class="dv">9</span>)) <span class="sc">%&gt;%</span> <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># call moving_avg on qb_mpr and create a new column to store associated moving_avg concentrations with each nutrient in a single column </span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>qb_mpr_ma <span class="ot">&lt;-</span> qb_mpr <span class="sc">%&gt;%</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Sample_ID, nutrients) <span class="sc">%&gt;%</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">moving_avg_nutrients =</span> <span class="fu">sapply</span>(<span class="at">X =</span> Sample_Date, moving_avg, <span class="at">dates =</span> <span class="fu">as.Date</span>(Sample_Date), <span class="at">conc =</span> concentration, <span class="at">window_size =</span> <span class="dv">9</span>)) <span class="sc">%&gt;%</span> <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="results" class="level1">
 <h1>Results</h1>
+<p>Taking a look at the new moving average data set, it is noticeable that <code>NaN</code> are persistent occurrences for NH4-N. It is possible that this is a result of inconsistent sampling, human error, technique error, or other confounding influence that disrupted the sampling process in retaining an actual value. As a result, moving averages were not calculated for several years for NH4-N; it is difficult to tell the results of Hurricane Hugo on this contaminant alone.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># look at the first six rows </span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(qb_mpr_ma)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># look at the first six rows </span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(qb_mpr_ma)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 6
   Sample_Date nutrients concentration Sample_ID year_sample moving_avg_nutrients
@@ -348,47 +268,75 @@ TDNCode, SiO2Code, DONCode, TSS, Turbidity)`</code></pre>
 5 1986-05-20  NH4-N             NA    Q1               1986              NaN    
 6 1986-05-27  K                  0.82 Q1               1986                0.817</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># graph them with for loop</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="co"># create list of nutrients (just want the levels)</span></span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>nutrient_list <span class="ot">&lt;-</span> <span class="fu">unique</span>(qb_mpr_ma<span class="sc">$</span>nutrients)</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>hugo <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="st">"1989-09-21"</span>)</span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="co">#?geom_vline</span></span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> nutrient_list) {</span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># i is not a position but a "type" of nutrient</span></span>
-<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>  plot_store <span class="ot">&lt;-</span> qb_mpr_ma <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">year_sample =</span> <span class="fu">year</span>(Sample_Date)) <span class="sc">%&gt;%</span></span>
-<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(nutrients <span class="sc">==</span> i, year_sample <span class="sc">&gt;=</span> <span class="dv">1988</span> <span class="sc">&amp;</span> year_sample <span class="sc">&lt;=</span> <span class="dv">1998</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">#drop_na(moving_avg_nutrients) %&gt;% </span></span>
-<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Sample_Date, <span class="at">y =</span> moving_avg_nutrients, <span class="at">col =</span> Sample_ID, <span class="at">group =</span> Sample_ID)) <span class="sc">+</span></span>
-<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="fu">paste</span>(<span class="st">"Moving Average of"</span>, i),</span>
-<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>         <span class="at">y =</span> <span class="st">"9 Wk Moving Average"</span>,</span>
-<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>         <span class="at">x =</span> <span class="st">"Year"</span>, <span class="at">caption =</span> <span class="st">"Hurricane Hugo (marked by the dashed line) occurred around 09/21/1989."</span>) <span class="sc">+</span> </span>
-<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> hugo, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">col =</span> <span class="st">"red"</span>) </span>
-<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a> </span>
-<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>   <span class="fu">print</span>(plot_store) </span>
-<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggsave</span>(<span class="at">filename =</span> <span class="fu">paste0</span>(<span class="st">"plot "</span>, i, <span class="st">".png"</span>), <span class="at">path =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"figs"</span>), <span class="at">plot =</span> plot_store)</span>
-<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The data was visualized over a decade (1988-1998) to better visualize assess trends in contaminant concentration over time. An approximate date of 9/21/1989 was selected for Hurricane Hugo’s impact on Puerto Rico and was referenced as a date type for the x-intercept in <code>geom_vline()</code>. Calcium, potassium, magnesium, and nitrate all increased in concentration following Hurricane Hugo. Calcium was most abundant at MPR, Q3 had high mean concentrations of magnesium and potassium post-hurricane, and nitrate was particularly highly concentrated at Q2 and Q3.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>hugo <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="st">"1989-09-21"</span>) <span class="co"># store approximate date for hurricane as date type for x-intercept reference in geom_vline()</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>plot_facet <span class="ot">&lt;-</span> qb_mpr_ma <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">year_sample =</span> <span class="fu">year</span>(Sample_Date)) <span class="sc">%&gt;%</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(year_sample <span class="sc">&gt;=</span> <span class="dv">1988</span> <span class="sc">&amp;</span> year_sample <span class="sc">&lt;=</span> <span class="dv">1998</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>   <span class="co"># drop_na(moving_avg_nutrients) %&gt;%  </span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Sample_Date, <span class="at">y =</span> moving_avg_nutrients, <span class="at">col =</span> Sample_ID, <span class="at">group =</span> Sample_ID)) <span class="sc">+</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Nine Week Moving Averages of Nutrients/Contaminants (1988-1998)"</span>,</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">y =</span> <span class="st">"Moving Average (nine weeks)"</span>,</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">x =</span> <span class="st">"Year"</span>, <span class="at">caption =</span> <span class="st">"Hurricane Hugo (marked by the dashed line) occurred around 09/21/1989."</span>) <span class="sc">+</span> <span class="fu">facet_wrap</span>(<span class="sc">~</span><span class="fu">factor</span>(nutrients), <span class="at">scales =</span> <span class="st">"free_y"</span>, <span class="at">ncol =</span> <span class="dv">1</span>) <span class="sc">+</span> <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> hugo, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">col =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"right"</span>,</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>)</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>plot_facet</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">filename =</span> <span class="fu">paste0</span>(<span class="st">"plot_facet.png"</span>), <span class="at">path =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"figs"</span>), <span class="at">plot =</span> plot_facet)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Saving 7 x 5 in image</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># graph them with for loop</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="co"># create list of nutrients (just want the levels)</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>nutrient_list <span class="ot">&lt;-</span> <span class="fu">unique</span>(qb_mpr_ma<span class="sc">$</span>nutrients)</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>hugo <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="st">"1989-09-20"</span>)</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> nutrient_list) {</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># i is not a position but a "type" of nutrient</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  plot_store <span class="ot">&lt;-</span> qb_mpr_ma <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">year_sample =</span> <span class="fu">year</span>(Sample_Date)) <span class="sc">%&gt;%</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(nutrients <span class="sc">==</span> i, year_sample <span class="sc">&gt;=</span> <span class="dv">1988</span> <span class="sc">&amp;</span> year_sample <span class="sc">&lt;=</span> <span class="dv">1998</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">#drop_na(moving_avg_nutrients) %&gt;% </span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Sample_Date, <span class="at">y =</span> moving_avg_nutrients, <span class="at">col =</span> Sample_ID, <span class="at">group =</span> Sample_ID)) <span class="sc">+</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="fu">paste</span>(<span class="st">"Moving Average of"</span>, i),</span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>         <span class="at">y =</span> <span class="st">"9 Wk Moving Average"</span>,</span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>         <span class="at">x =</span> <span class="st">"Year"</span>, <span class="at">caption =</span> <span class="st">"Hurricane Hugo (marked by the dashed line) occurred around 09/21/1989."</span>) <span class="sc">+</span> </span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> hugo, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">col =</span> <span class="st">"red"</span>) </span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>   <span class="fu">print</span>(plot_store) </span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggsave</span>(<span class="at">filename =</span> <span class="fu">paste0</span>(<span class="st">"plot "</span>, i, <span class="st">".png"</span>), <span class="at">path =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"figs"</span>), <span class="at">plot =</span> plot_store)</span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Saving 7 x 5 in image</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-8-2.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Saving 7 x 5 in image</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-5-3.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-8-3.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Saving 7 x 5 in image</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-5-4.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-8-4.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Saving 7 x 5 in image</code></pre>
@@ -398,7 +346,7 @@ TDNCode, SiO2Code, DONCode, TSS, Turbidity)`</code></pre>
 (`geom_line()`).</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-5-5.png" class="img-fluid" width="672"></p>
+<p><img src="paper_files/figure-html/unnamed-chunk-8-5.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Saving 7 x 5 in image</code></pre>
@@ -407,32 +355,8 @@ TDNCode, SiO2Code, DONCode, TSS, Turbidity)`</code></pre>
 <pre><code>Warning: Removed 426 rows containing missing values or values outside the scale range
 (`geom_line()`).</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># # create subset to see where most nans are</span></span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a> <span class="co"># qb_mpr_ma %&gt;% filter(moving_avg_nutrients != is.nan(qb_mpr_ma$moving_avg_nutrients), nutrients == "NH4-N") %&gt;% #drop_na(moving_avg_nutrients) %&gt;%</span></span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a> <span class="co">#    ggplot(aes(x = Sample_Date, y = moving_avg_nutrients, col = Sample_ID, group = Sample_ID)) +</span></span>
-<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a> <span class="co">#    geom_line() +</span></span>
-<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a> <span class="co">#    # labs(title = paste("Moving Average of", i),</span></span>
-<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a> <span class="co">#    #      y = "9 Wk Moving Average",</span></span>
-<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a> <span class="co">#    #      x = "Year", caption = "Hurricane Hugo (marked by the dashed line) occurred around 09/21/1989.") +</span></span>
-<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a> <span class="co">#    theme_bw() + geom_vline(xintercept = hugo, linetype = "dashed", col = "red")</span></span>
-<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a> </span>
-<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>qb_mpr_ma <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">year_sample =</span> <span class="fu">year</span>(Sample_Date)) <span class="sc">%&gt;%</span></span>
-<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(year_sample <span class="sc">&gt;=</span> <span class="dv">1988</span> <span class="sc">&amp;</span> year_sample <span class="sc">&lt;=</span> <span class="dv">1998</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a>   <span class="co"># drop_na(moving_avg_nutrients) %&gt;%  </span></span>
-<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Sample_Date, <span class="at">y =</span> moving_avg_nutrients, <span class="at">col =</span> Sample_ID, <span class="at">group =</span> Sample_ID)) <span class="sc">+</span></span>
-<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
-<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Nine Week Moving Averages of Nutrients/Contaminants (1988-1998)"</span>,</span>
-<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a>         <span class="at">y =</span> <span class="st">"Moving Average (nine weeks)"</span>,</span>
-<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a>         <span class="at">x =</span> <span class="st">"Year"</span>, <span class="at">caption =</span> <span class="st">"Hurricane Hugo (marked by the dashed line) occurred around 09/21/1989."</span>) <span class="sc">+</span> <span class="fu">facet_wrap</span>(<span class="sc">~</span><span class="fu">factor</span>(nutrients), <span class="at">scales =</span> <span class="st">"free_y"</span>, <span class="at">ncol =</span> <span class="dv">1</span>) <span class="sc">+</span> <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> hugo, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">col =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
-<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"right"</span>,</span>
-<span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
-<span id="cb37-21"><a href="#cb37-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>)</span>
-<span id="cb37-22"><a href="#cb37-22" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="paper_files/figure-html/unnamed-chunk-5-6.png" class="img-fluid" width="672"></p>
 </div>
-</div>
+<p><img src="images/plot_facet.png" class="img-fluid"></p>
 </section>
 
 </main>

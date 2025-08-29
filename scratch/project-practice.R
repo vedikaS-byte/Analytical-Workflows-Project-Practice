@@ -8,7 +8,7 @@ qb3 <- read_csv(here::here("data", "QuebradaCuenca3-Bisley.csv"))
 pmr <- read_csv(here::here("data", "RioMameyesPuenteRoto.csv"))
 
 
-?require()
+
 
 # qb1 <- qb1 %>% mutate(year = year(Sample_Date), month = month(Sample_Date), day = 
 #                         day(Sample_Date))
