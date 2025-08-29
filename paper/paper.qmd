@@ -52,7 +52,7 @@ qb_mpr <- qb_mpr %>% mutate(year_sample = year(Sample_Date))
 
 ```{r}
 # source moving_avg() locally from R folder
-source(here::here("R", "moving_avg.R"))
+source(here::here("scratch", "moving_avg.R"))
 ```
 
 A new column called `moving_avg_nutrients` was created by calling `sapply()` to apply `moving_avg()` to every nutrient in the data set. `Sample_Date` stored the sampled dates, concentration was set to `conc`, and the `window_size` was specified for nine weeks. A new data set called `qb_mpr_ma` was created to store `moving_avg_nutrients` and was used in recreating the visualization.

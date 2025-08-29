@@ -32,15 +32,17 @@ The data is publicly available on the EDI Data Portal and appears as separate fi
 
 # Contents
 
--   `paper`
+-   `paper`: Contains `paper.qmd` of objectives (background and data), methods, and results of the analysis.
 
--   `docs`
+-   `docs:` Rendered html file of paper generated here for reference.
 
 -   `scratch`: Remote function used for calculations and "spaghetti code" (rough draft of all code) are stored here.
 
 -   `figs`: Contains graphs associated with yearly and nine-week moving averages per contaminant at each site.
 
 -   `data`: All raw data files are stored here.
+
+-   `R`: This folder contains a data cleaning script and a script for package installation required for the analysis.
 
 # Analysis
 
