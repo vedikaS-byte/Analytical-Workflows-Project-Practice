@@ -4,7 +4,7 @@ bibliography: references.bib
 
 # Analytical-Workflows-Project-Practice
 
-This project serves to replicate a prior figure completed by [@schaefer2000] based on data published by McDowell et al. (2024). Moving nine-week averages were created for each concentration of contaminants (hereby referred to as "nutrients") at different streams in Puerto Rico before and after Hurricane Hugo. The primary objective is to establish a reproducible workflow that is replicable for interested environmental enthusiasts.
+This project serves to replicate a prior figure completed by Schaefer et al. (2000) based on data published by McDowell et al. (2024). Moving nine-week averages were created for each concentration of contaminants (hereby referred to as "nutrients") at different streams in Puerto Rico before and after Hurricane Hugo. The primary objective is to establish a reproducible workflow that is replicable for interested environmental enthusiasts.
 
 # Background
 
@@ -34,13 +34,15 @@ The data is publicly available on the EDI Data Portal and appears as separate fi
 
 -   `paper`: Contains `paper.qmd` of objectives (background and data), methods, and results of the analysis.
 
--   `docs:` Rendered html file of paper generated here for reference.
+-   `docs`: Rendered html file of paper generated here for reference.
 
 -   `scratch`: Remote function used for calculations and "spaghetti code" (rough draft of all code) are stored here.
 
 -   `figs`: Contains graphs associated with yearly and nine-week moving averages per contaminant at each site.
 
 -   `data`: All raw data files are stored here.
+
+-   `assessment`: Contains assessment for self-check of project goals.
 
 -   `R`: This folder contains a data cleaning script and a script for package installation required for the analysis.
 
