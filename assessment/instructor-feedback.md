@@ -19,3 +19,57 @@ Collaborating with a fellow coder was an enriching experience. This experience i
 4.  [Merged request for moving_avg() on 9/27/2025](https://github.com/vedikaS-byte/Analytical-Workflows-Project-Practice/commit/741efcef9abc7892ad5c1f5aa38f5b2f848e989a)
 5.  [Resolved merge conflict #3](https://github.com/vedikaS-byte/Analytical-Workflows-Project-Practice/pull/3) with collaborator
 6.  [Resolved merge conflict #12](https://github.com/vedikaS-byte/Analytical-Workflows-Project-Practice/pull/12) with collaborator
+
+# Instructor feedback
+
+## Automate
+
+[E] **Running the entire analysis requires rendering one Quarto document**
+
+[M] The analysis runs without errors
+
+[M] **The analysis produces the expected output**
+
+[E] **Data import/cleaning is handled in its own script(s)**
+
+## Organize
+
+[NY] Raw data is contained in its own folder
+- `project-practice.qmd` in `data` folder
+
+[NY] Intermediate outputs are created and saved to a separate folder from raw data
+- No `outputs` or alike folder
+
+[M] **At least one piece of functionality has been refactored into a function in its own file**
+
+## Document
+
+[M] The repo has a README that explains where to find (1) data, (2) analysis script, (3) supporting code, and (4) outputs
+- Content in README is similar to what would be expected in `paper.qmd`
+
+[E] **The README includes a flowchart and text explaining how the analysis works**
+
+[M] **The code is appropriately commented**
+
+[NY] **Variable and function names are descriptive and follow a consistent naming convention**
+- Column names varied from `nutrients` to `Sample_Date` likely because case conversion did not occur
+
+## Scale
+
+After cloning the repo on Workbench:
+
+[M] Running the environment initialization script installs all required packages
+
+[M] The analysis script runs without errors
+
+## Collaborate
+
+[M] **The student has provided attentive, constructive feedback in a peer review**
+
+[M] **The student has contributed to a peer's repo by opening an issue and creating a pull request**
+
+[M] The repo has at least three closed GitHub issues
+
+[M] The commit history includes at least one merged branch and a resolved merge conflict
+
+[M] The rendered analysis is accessible via GitHub Pages
