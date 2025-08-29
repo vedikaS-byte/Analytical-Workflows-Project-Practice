@@ -5,7 +5,6 @@ format:
     output-file: "index.html"
 editor_options: 
   chunk_output_type: console
- 
 ---
 
 # Background
@@ -14,51 +13,11 @@ Hurricane Hugo (1989) greatly affected Puerto Rico's freshwater systems. The ext
 
 # Data
 
-The data is publicly available on the EDI Data Portal and appears as separate files for each sampling site. For this analysis, the "QuebradaCuenca1-Bisley", "QuebradaCuenca2-Bisley", "QuebradaCuenca3-Bisley", and "RioMameyesPuenteRoto.csv" were downloaded for the Q1, Q2, Q3, and MPR sample sites. Each file was read in from the data folder and were fully joined to create a single unique data set called `qb_mpr`. 
-
-```{r}
-#| warning: false
-#| message: false
-#load the tidyverse for data cleaning 
-library(tidyverse, warn.conflicts = F)
-library(lubridate, warn.conflicts = F)
-library(ggplot2, warn.conflicts = F)
-```
-
-
-```{r}
-#| warning: false
-#load each data set individually
-qb1 <- read_csv(here::here("data", "QuebradaCuenca1-Bisley.csv"))
-qb2 <- read_csv(here::here("data", "QuebradaCuenca2-Bisley.csv"))
-qb3 <- read_csv(here::here("data", "QuebradaCuenca3-Bisley.csv"))
-mpr <- read_csv(here::here("data", "RioMameyesPuenteRoto.csv"))
-
-# use a full_join() to join data sets. No unique ID is needed since the data sets are joined on shared columns to avoid duplicates
-qb <- qb1 %>% full_join(qb2)
-qb <- qb %>% full_join(qb3)
-qb_mpr <- qb %>% full_join(mpr)
-
-head(qb_mpr, head = 5) # what do the first five rows look like?
-# note the NAs, these will be handled when calculating the moving averages with na.rm = T
-```
+The data is publicly available on the EDI Data Portal and appears as separate files for each sampling site. For this analysis, the "QuebradaCuenca1-Bisley", "QuebradaCuenca2-Bisley", "QuebradaCuenca3-Bisley", and "RioMameyesPuenteRoto.csv" were downloaded for the Q1, Q2, Q3, and MPR sample sites. Each file was read in from the data folder and were fully joined to create a single unique data set called `qb_mpr`.
 
 # Methods
 
 The `tidyverse` package was used to perform data tidying and wrangling to simplify the analysis. It was necessary to perform `pivot_longer()` to group all nutrients under a shared column and store the concentration values separately in order to create a singular column for associated moving averages. `Sample_Date, nutrients, concentration,` and `Sample_ID` were selected to perform the moving average analysis, where each nutrient would have an associated moving average concentration for a specific sampling date based on the original concentration. Additionally, a new variable `year_sample` was created by pulling the year from the sampling date for the ease of filtering during visualization.
-
-```{r}
-# select variables needed
-# gather nutrient columns under one column called "nutrients" as levels, pull concentrations from each as a separate concentration (value) column
-qb_mpr <-  qb_mpr %>% 
-  pivot_longer(cols = c("K", "NO3-N", "Mg", "Ca","NH4-N"), names_to = "nutrients", values_to = "concentration") %>%
-  select(Sample_Date, nutrients, concentration, Sample_ID)
-colnames(qb_mpr)
-
-
-## create new variable year_sample to pull year from sample_date for easy filtering later
-qb_mpr <- qb_mpr %>% mutate(year_sample = year(Sample_Date))
-```
 
 A major component of this project involved minimizing the moving average calculation to a single date before applying the process over the entire range of sample dates. A single date (`focal_date`) was envisioned as the "index" in Sample_Date, where any dates within 4.5 weeks (halfway point of nine weeks) of this date were selected as a single window Any concentrations in this time window were then averaged for the central average of a nine week period at that point in time. Essentially, the central average was calculated for each focal date in `Sample_Date` to include the 4.5 weeks before and after that date; the average concentration was then extracted for each "index" and stored for each date.
 
@@ -66,16 +25,14 @@ A major component of this project involved minimizing the moving average calcula
 
 ```{r}
 # source moving_avg() locally from R folder
-source(here::here("scratch", "moving_avg.R"))
+source(here::here("R", "moving_avg.R"))
 ```
 
 A new column called `moving_avg_nutrients` was created by calling `sapply()` to apply `moving_avg()` to every nutrient in the data set. `Sample_Date` stored the sampled dates, concentration was set to `conc`, and the `window_size` was specified for nine weeks. A new data set called `qb_mpr_ma` was created to store `moving_avg_nutrients` and was used in recreating the visualization.
 
 ```{r}
-# call moving_avg on qb_mpr and create a new column to store associated moving_avg concentrations with each nutrient in a single column 
-qb_mpr_ma <- qb_mpr %>%
-  group_by(Sample_ID, nutrients) %>%
-  mutate(moving_avg_nutrients = sapply(X = Sample_Date, moving_avg, dates = as.Date(Sample_Date), conc = concentration, window_size = 9)) %>% ungroup()
+# recall, we create an RDS file here to ensure we can locally source this dataset for reduced clutter
+qb_mpr_ma <- readRDS(here::here("output", "qb_mpr_ma.rds"))
 ```
 
 # Results
@@ -87,9 +44,10 @@ Taking a look at the new moving average data set, it is noticeable that `NaN` ar
 head(qb_mpr_ma)
 ```
 
-The data was visualized over a decade (1988-1998) to better visualize assess trends in contaminant concentration over time. An approximate date of 9/21/1989 was selected for Hurricane Hugo's impact on Puerto Rico and was referenced as a date type for the x-intercept in `geom_vline()`. Calcium, potassium, magnesium, and nitrate all increased in concentration following Hurricane Hugo. Calcium was most abundant at MPR, Q3 had high mean concentrations of magnesium and potassium post-hurricane, and nitrate was particularly highly concentrated at Q2 and Q3. 
+The data was visualized over a decade (1988-1998) to better visualize assess trends in contaminant concentration over time. An approximate date of 9/21/1989 was selected for Hurricane Hugo's impact on Puerto Rico and was referenced as a date type for the x-intercept in `geom_vline()`. Calcium, potassium, magnesium, and nitrate all increased in concentration following Hurricane Hugo. Calcium was most abundant at MPR, Q3 had high mean concentrations of magnesium and potassium post-hurricane, and nitrate was particularly highly concentrated at Q2 and Q3.
 
 ```{r}
+library(tidyverse)
 hugo <- as.Date("1989-09-21") # store approximate date for hurricane as date type for x-intercept reference in geom_vline()
 
 plot_facet <- qb_mpr_ma %>% mutate(year_sample = year(Sample_Date)) %>%
@@ -112,6 +70,8 @@ plot_facet # view plot
 
 # save in figs
 ggsave(filename = paste0("plot_facet.png"), path = here::here("figs"), plot = plot_facet)
+
+
 ```
 
 ```{r}
@@ -134,5 +94,3 @@ for (i in nutrient_list) {
   ggsave(filename = paste0("plot ", i, ".png"), path = here::here("figs"), plot = plot_store)
 }
 ```
-
-

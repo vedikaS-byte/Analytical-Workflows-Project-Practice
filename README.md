@@ -36,15 +36,17 @@ The data is publicly available on the EDI Data Portal and appears as separate fi
 
 -   `docs`: Rendered html file of paper generated here for reference.
 
--   `scratch`: Remote function used for calculations and "spaghetti code" (rough draft of all code) are stored here.
+-   `scratch`: "Spaghetti code" (rough draft of all code) is stored here.
 
 -   `figs`: Contains graphs associated with yearly and nine-week moving averages per contaminant at each site.
+
+-   `output`: RDS files of data sets stored here for easy sourcing and reading in from root scripts (`0_environmental_package_installation, 1_cleaning_data.R, 2_output_moving_avg.R`).
 
 -   `data`: All raw data files are stored here.
 
 -   `assessment`: Contains assessment for self-check of project goals.
 
--   `R`: This folder contains a data cleaning script and a script for package installation required for the analysis.
+-   `R`: This folder contains the syntax for `moving_avg()`.
 
 # Analysis
 

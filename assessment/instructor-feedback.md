@@ -34,25 +34,21 @@ Collaborating with a fellow coder was an enriching experience. This experience i
 
 ## Organize
 
-[NY] Raw data is contained in its own folder
-- `project-practice.qmd` in `data` folder
+[NY] Raw data is contained in its own folder - `project-practice.qmd` in `data` folder
 
-[NY] Intermediate outputs are created and saved to a separate folder from raw data
-- No `outputs` or alike folder
+[NY] Intermediate outputs are created and saved to a separate folder from raw data - No `outputs` or alike folder
 
 [M] **At least one piece of functionality has been refactored into a function in its own file**
 
 ## Document
 
-[M] The repo has a README that explains where to find (1) data, (2) analysis script, (3) supporting code, and (4) outputs
-- Content in README is similar to what would be expected in `paper.qmd`
+[M] The repo has a README that explains where to find (1) data, (2) analysis script, (3) supporting code, and (4) outputs - Content in README is similar to what would be expected in `paper.qmd`
 
 [E] **The README includes a flowchart and text explaining how the analysis works**
 
 [M] **The code is appropriately commented**
 
-[NY] **Variable and function names are descriptive and follow a consistent naming convention**
-- Column names varied from `nutrients` to `Sample_Date` likely because case conversion did not occur
+[NY] **Variable and function names are descriptive and follow a consistent naming convention** - Column names varied from `nutrients` to `Sample_Date` likely because case conversion did not occur
 
 ## Scale
 
