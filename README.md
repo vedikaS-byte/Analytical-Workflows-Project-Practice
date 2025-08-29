@@ -14,25 +14,45 @@ Hurricane Hugo (1989) greatly affected Puerto Rico's freshwater systems. The ext
 
 # Data
 
-The data is publicly available on the EDI Data Portal and appears as separate files for each sampling site. For this analysis, the "QuebradaCuenca1-Bisley.csv", "QuebradaCuenca2-Bisley.csv", "QuebradaCuenca3-Bisley.csv", and "RioMameyesPuenteRoto.csv" were downloaded for the Q1, Q2, Q3, and RMP sample sites. Each dataset contained the following shared columns necessary for the analysis:
+The data is publicly available on the EDI Data Portal and appears as separate files for each sampling site. For this analysis, the "QuebradaCuenca1-Bisley.csv", "QuebradaCuenca2-Bisley.csv", "QuebradaCuenca3-Bisley.csv", and "RioMameyesPuenteRoto.csv" were downloaded for the Q1, Q2, Q3, and MPR sample sites. Each data set contained the following shared columns necessary for the analysis:
 
 -   `Sample_Date`: The specific sample date stored as a "date" type in YYYY-MM-DD format. Sampling was not evenly spaced out; for example some samples were sometimes taken months apart.
 
 -   `Sample_ID`: The sample location, taken at four different locations in the Puerto Rico watershed.
 
--   `nutrients`: Categorical variable storing each nutrient that was sampled at each site as levels. The original data files stored these
+-   `nutrients`: Categorical variable storing each nutrient that was sampled at each site as levels. The original data files stored these contaminants as individual nutrients with concentrations: K (potassium), Mg (magnesium), Ca (calcium), NO3-N (nitrate), and NH4-N (ammonia nitrate).
+
+-   `concentration`: Numeric variable created from performing pivot_longer() to gather nutrient columns and separate concentrations and prevent spread. This column contains each numeric concentration associated with its associated nutrient.
+
+-   Separately created columns:
+
+    -   `moving_avg_nutrients`: This column stores all the nine week moving average concentrations for each nutrient produced from running the `moving_avg()` on `qb_mpr$Sample_Date` using `sapply()`.
+
+    -   `year_sample`: The extracted year from `Sample_Date` to enable easier filtering for isolating the data set to a ten year time frame.
 
 # Contents
 
--   \scratch: Remote functions used for calculations are stored here. Currently, the primary script "project-practice.R" is stored here.
+-   `paper`
 
--   \figs: Contains graphs associated with yearly and nine-week moving averages per contaminant at each site.
+-   `docs`
 
--   \data: All raw data is stored here.
+-   `scratch`: Remote function used for calculations and "spaghetti code" (rough draft of all code) are stored here.
+
+-   `figs`: Contains graphs associated with yearly and nine-week moving averages per contaminant at each site.
+
+-   `data`: All raw data files are stored here.
 
 # Analysis
 
-The\
+The `tidyverse` package was used to perform data tidying and wrangling to simplify the analysis. It was necessary to perform `pivot_longer()` to group all nutrients under a shared column and store the concentration values separately in order to create a singular column for associated moving averages. `Sample_Date, nutrients, concentration,` and `Sample_ID` were selected to perform the moving average analysis, where each nutrient would have an associated moving average concentration for a specific sampling date based on the original concentration. Additionally, a new variable `year_sample` was created by pulling the year from the sampling date for the ease of filtering during visualization.
+
+`moving_avg()`was locally sourced from `R\moving_avg.R`. The associated syntax is located in the `moving_avg.R` script. The function takes a singular focal date (index) in `Sample_Date` and checks whether sample dates before and after that focal date are within 4.5 weeks of each other to calculate a centered average for that nutrient. The function was written to include `window_size`, a parameter adjusting for the desired length required to calculate a moving average. Additional information is linked [here](https://github.com/vedikaS-byte/Analytical-Workflows-Project-Practice/blob/main/R/moving_avg.R).
+
+A major component of this project involved minimizing the moving average calculation to a single date before applying the process over the entire range of sample dates. [FINISH]
+
+A new column called `moving_avg_nutrients` was created by calling `sapply()` to apply `moving_avg()` to every nutrient in the data set. `Sample_Date` stored the sampled dates, concentration was set to `conc`, and the `window_size` was specified for nine weeks. A new data set called `qb_mpr_ma` was created to store `moving_avg_nutrients` and was used in recreating the visualization. All associated figures are included in `figs`.
+
+![](figs/flowchart.png)
 
 # Citation
 

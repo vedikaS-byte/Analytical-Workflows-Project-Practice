@@ -3,6 +3,8 @@ title: "paper"
 format: 
   html: 
     output-file: "index.html"
+editor_options: 
+  chunk_output_type: console
 ---
 
 # Background
@@ -11,72 +13,92 @@ Hurricane Hugo (1989) greatly affected Puerto Rico's freshwater systems. The ext
 
 # Data
 
-The data is publicly available on the EDI Data Portal and appears as separate files for each sampling site. For this analysis, the "QuebradaCuenca1-Bisley", "QuebradaCuenca2-Bisley", "QuebradaCuenca3-Bisley", and "RioMameyesPuenteRoto.csv" were downloaded for the Q1, Q2, Q3, and RMP sample sites. Each file was read in from the data folder and were fully joined to create a single unique dataset called "qb_pmr."
+The data is publicly available on the EDI Data Portal and appears as separate files for each sampling site. For this analysis, the "QuebradaCuenca1-Bisley", "QuebradaCuenca2-Bisley", "QuebradaCuenca3-Bisley", and "RioMameyesPuenteRoto.csv" were downloaded for the Q1, Q2, Q3, and MPR sample sites. Each file was read in from the data folder and were fully joined to create a single unique data set called `qb_mpr`.
 
 ```{r}
+#load the tidyverse for data cleaning 
 library(tidyverse)
+
+#load each data set individually
 qb1 <- read_csv(here::here("data", "QuebradaCuenca1-Bisley.csv"))
 qb2 <- read_csv(here::here("data", "QuebradaCuenca2-Bisley.csv"))
 qb3 <- read_csv(here::here("data", "QuebradaCuenca3-Bisley.csv"))
-pmr <- read_csv(here::here("data", "RioMameyesPuenteRoto.csv"))
+mpr <- read_csv(here::here("data", "RioMameyesPuenteRoto.csv"))
 
-
+# use a full_join() to join data sets. No unique ID is needed since the data sets are joined on shared columns to avoid duplicates
 qb <- qb1 %>% full_join(qb2)
 qb <- qb %>% full_join(qb3)
-qb_pmr <- qb %>% full_join(pmr)
+qb_mpr <- qb %>% full_join(mpr)
 
-str(qb_pmr)
-head(qb_pmr, head = 5)
-
-source(here("R", "moving_average.R"))
-
+head(qb_mpr, head = 5) # what do the first five rows look like?
 ```
 
 # Methods
 
-The combine dataset
+The `tidyverse` package was used to perform data tidying and wrangling to simplify the analysis. It was necessary to perform `pivot_longer()` to group all nutrients under a shared column and store the concentration values separately in order to create a singular column for associated moving averages. `Sample_Date, nutrients, concentration,` and `Sample_ID` were selected to perform the moving average analysis, where each nutrient would have an associated moving average concentration for a specific sampling date based on the original concentration. Additionally, a new variable `year_sample` was created by pulling the year from the sampling date for the ease of filtering during visualization.
 
 ```{r}
-# tidy 
 # select variables needed
+qb_mpr <-  qb_mpr %>% pivot_longer(cols = c("K", "NO3-N", "Mg", "Ca","NH4-N"), names_to = "nutrients", values_to = "concentration") %>% select(Sample_Date, nutrients, concentration, Sample_ID)
+colnames(qb_mpr)
 
-qb_pmr <-  qb_pmr %>% pivot_longer(cols = c("K", "NO3-N", "Mg", "Ca","NH4-N"), names_to = "nutrients", values_to = "concentration") %>% select(Sample_Date, nutrients, concentration, Sample_ID)
-colnames(qb_pmr)
 
-
-## groupby nutrients and create moving averages
-qb_pmr <- qb_pmr %>% mutate(year_sample = year(Sample_Date), month_year = format(Sample_Date, "%Y-%m"), day_of_year= yday(Sample_Date), week_sample = week(Sample_Date))
-
-## isolate for neccessary years
-
+## create new variable year_sample to pull year from sample_date for easy filtering later
+qb_mpr <- qb_mpr %>% mutate(year_sample = year(Sample_Date))
 
 ```
 
-Check my moving average function in `R\moving_avg.R` or  `moving_avg()` [https://github.com/vedikaS-byte/Analytical-Workflows-Project-Practice/blob/main/R/moving_avg.R]
+`moving_avg()`was locally sourced from `R\moving_avg.R`. The associated syntax is located in the `moving_avg.R` script. The function takes a singular focal date (index) in `Sample_Date` and checks whether sample dates before and after that focal date are within 4.5 weeks of each other to calculate a centered average for that nutrient. The function was written to include `window_size`, a parameter adjusting for the desired length required to calculate a moving average. Additional information is linked [here](https://github.com/vedikaS-byte/Analytical-Workflows-Project-Practice/blob/main/R/moving_avg.R).
 
 ```{r}
-# call moving_avg on qb_pmr and create a new column to store associated moving_avg concentrations with each nutrient in a single column 
-qb_pmr_test_1 <- qb_pmr
-qb_pmr_ma <- qb_pmr_test_1 %>%
+# source moving_avg() locally from R folder
+source(here::here("R", "moving_avg.R"))
+```
+
+A new column called `moving_avg_nutrients` was created by calling `sapply()` to apply `moving_avg()` to every nutrient in the data set. `Sample_Date` stored the sampled dates, concentration was set to `conc`, and the `window_size` was specified for nine weeks. A new data set called `qb_mpr_ma` was created to store `moving_avg_nutrients` and was used in recreating the visualization.
+
+```{r}
+# call moving_avg on qb_mpr and create a new column to store associated moving_avg concentrations with each nutrient in a single column 
+qb_mpr_ma <- qb_mpr %>%
   group_by(Sample_ID, nutrients) %>%
   mutate(moving_avg_nutrients = sapply(X = Sample_Date, moving_avg, dates = as.Date(Sample_Date), conc = concentration, window_size = 9)) %>% ungroup()
 ```
 
 # Results
 
+Taking a look at the new moving average data set, it is noticeable that `NaN` are persistent occurrences for NH4-N. It is possible that this is a result of inconsistent sampling, human error, technique error, or other confounding influence that disrupted the sampling process in retaining an actual value. As a result, moving averages were not calculated for several years for NH4-N; it is difficult to tell the results of Hurricane Hugo on this contaminant alone.
+
 ```{r}
 # look at the first six rows 
-head(qb_pmr_ma)
+head(qb_mpr_ma)
+```
 
+The data was visualized over a decade (1988-1998) to better visualize assess trends in contaminant concentration over time. Calcium, potassium, magnesium, and nitrate all increased in concentration following Hurricane Hugo. Calcium was most abundant at MPR, Q3 had high mean concentrations of magnesium and potassium post-hurricane, and nitrate was particularly highly concentrated at Q2 and Q3.
+
+```{r}
+qb_mpr_ma %>% mutate(year_sample = year(Sample_Date)) %>%
+    filter(year_sample >= 1988 & year_sample <= 1998) %>%
+   # drop_na(moving_avg_nutrients) %>%  
+    ggplot(aes(x = Sample_Date, y = moving_avg_nutrients, col = Sample_ID, group = Sample_ID)) +
+    geom_line() + theme_bw() + 
+    labs(title = "Nine Week Moving Averages of Nutrients/Contaminants (1988-1998)",
+         y = "Moving Average (nine weeks)",
+         x = "Year", caption = "Hurricane Hugo (marked by the dashed line) occurred around 09/21/1989.") + facet_wrap(~factor(nutrients), scales = "free_y", ncol = 1) + geom_vline(xintercept = hugo, linetype = "dashed", col = "red") +
+  theme(
+    legend.position = "right",
+    plot.title = element_text(size = 14, face = "bold"),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
+
+```{r}
 # graph them with for loop
 # create list of nutrients (just want the levels)
-nutrient_list <- unique(qb_pmr_ma$nutrients)
-hugo <- as.Date("1989-09-21")
-#?geom_vline
+nutrient_list <- unique(qb_mpr_ma$nutrients)
 
 for (i in nutrient_list) {
   # i is not a position but a "type" of nutrient
-  plot_store <- qb_pmr_ma %>% mutate(year_sample = year(Sample_Date)) %>%
+  plot_store <- qb_mpr_ma %>% mutate(year_sample = year(Sample_Date)) %>%
     filter(nutrients == i, year_sample >= 1988 & year_sample <= 1998) %>%
     #drop_na(moving_avg_nutrients) %>% 
     ggplot(aes(x = Sample_Date, y = moving_avg_nutrients, col = Sample_ID, group = Sample_ID)) +
@@ -89,25 +111,4 @@ for (i in nutrient_list) {
    print(plot_store) 
   ggsave(filename = paste0("plot ", i, ".png"), path = here::here("figs"), plot = plot_store)
 }
-
-
-# # create subset to see where most nans are
- # qb_pmr_ma %>% filter(moving_avg_nutrients != is.nan(qb_pmr_ma$moving_avg_nutrients), nutrients == "NH4-N") %>% #drop_na(moving_avg_nutrients) %>%
- #    ggplot(aes(x = Sample_Date, y = moving_avg_nutrients, col = Sample_ID, group = Sample_ID)) +
- #    geom_line() +
- #    # labs(title = paste("Moving Average of", i),
- #    #      y = "9 Wk Moving Average",
- #    #      x = "Year", caption = "Hurricane Hugo (marked by the dashed line) occurred around 09/21/1989.") +
- #    theme_bw() + geom_vline(xintercept = hugo, linetype = "dashed", col = "red")
- 
-qb_pmr_ma %>% mutate(year_sample = year(Sample_Date)) %>%
-    filter(year_sample >= 1988 & year_sample <= 1998) %>%
-   # drop_na(moving_avg_nutrients) %>%  
-    ggplot(aes(x = Sample_Date, y = moving_avg_nutrients, col = Sample_ID, group = Sample_ID)) +
-    geom_line() + theme_bw() + 
-    labs(title = "Nine Week Moving Averages of Nutrients/Contaminants (1988-1998)",
-         y = "Moving Average (nine weeks)",
-         x = "Year", caption = "Hurricane Hugo (marked by the dashed line) occurred around 09/21/1989.") + facet_wrap(~factor(nutrients), scales = "free_y") + geom_vline(xintercept = hugo, linetype = "dashed", col = "red") 
-
- 
 ```
