@@ -47,7 +47,10 @@ head(qb_mpr_ma)
 The data was visualized over a decade (1988-1998) to better visualize assess trends in contaminant concentration over time. An approximate date of 9/21/1989 was selected for Hurricane Hugo's impact on Puerto Rico and was referenced as a date type for the x-intercept in `geom_vline()`. Calcium, potassium, magnesium, and nitrate all increased in concentration following Hurricane Hugo. Calcium was most abundant at MPR, Q3 had high mean concentrations of magnesium and potassium post-hurricane, and nitrate was particularly highly concentrated at Q2 and Q3.
 
 ```{r}
-library(tidyverse)
+library(tidyverse, warn.conflicts = F)
+```
+
+```{r}
 hugo <- as.Date("1989-09-21") # store approximate date for hurricane as date type for x-intercept reference in geom_vline()
 
 plot_facet <- qb_mpr_ma %>% mutate(year_sample = year(Sample_Date)) %>%
