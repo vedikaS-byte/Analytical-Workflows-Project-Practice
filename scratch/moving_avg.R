@@ -3,7 +3,7 @@ moving_avg <- function(focal_date, dates, conc, window_size) {
   #dates <- as.Date(dates)
   # convert to days 
   is_in_window <- (dates > focal_date - (window_size/2)*7)  & # tell me when dates are greater than focal date offset by half of window 
-    (dates < focal_date + (window_size/2)*7)
+    (dates < focal_date + (window_size/2)*7) # convert to days since base unit of dates in R
   
   # find associated concentrations
   window_conc <- conc[is_in_window] # pull out associated concentrations

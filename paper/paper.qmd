@@ -44,16 +44,18 @@ The `tidyverse` package was used to perform data tidying and wrangling to simpli
 
 ```{r}
 # select variables needed
-qb_mpr <-  qb_mpr %>% pivot_longer(cols = c("K", "NO3-N", "Mg", "Ca","NH4-N"), names_to = "nutrients", values_to = "concentration") %>% select(Sample_Date, nutrients, concentration, Sample_ID)
+# gather nutrient columns under one column called "nutrients" as levels, pull concentrations from each as a separate concentration (value) column
+qb_mpr <-  qb_mpr %>% 
+  pivot_longer(cols = c("K", "NO3-N", "Mg", "Ca","NH4-N"), names_to = "nutrients", values_to = "concentration") %>%
+  select(Sample_Date, nutrients, concentration, Sample_ID)
 colnames(qb_mpr)
 
 
 ## create new variable year_sample to pull year from sample_date for easy filtering later
 qb_mpr <- qb_mpr %>% mutate(year_sample = year(Sample_Date))
-
 ```
 
-A major component of this project involved minimizing the moving average calculation to a single date before applying the process over the entire range of sample dates. A single 
+A major component of this project involved minimizing the moving average calculation to a single date before applying the process over the entire range of sample dates. A single date (`focal_date`) was envisioned as the "index" in Sample_Date, where any dates within 4.5 weeks (halfway point of nine weeks) of this date were selected as a single window Any concentrations in this time window were then averaged for the central average of a nine week period at that point in time. Essentially, the central average was calculated for each focal date in `Sample_Date` to include the 4.5 weeks before and after that date; the average concentration was then extracted for each "index" and stored for each date.
 
 `moving_avg()`was locally sourced from `R\moving_avg.R`. The associated syntax is located in the `moving_avg.R` script. The function takes a singular focal date (index) in `Sample_Date` and checks whether sample dates before and after that focal date are within 4.5 weeks of each other to calculate a centered average for that nutrient. The function was written to include `window_size`, a parameter adjusting for the desired length required to calculate a moving average. Additional information is linked [here](https://github.com/vedikaS-byte/Analytical-Workflows-Project-Practice/blob/main/R/moving_avg.R).
 
@@ -80,7 +82,7 @@ Taking a look at the new moving average data set, it is noticeable that `NaN` ar
 head(qb_mpr_ma)
 ```
 
-The data was visualized over a decade (1988-1998) to better visualize assess trends in contaminant concentration over time. An approximate date of 9/21/1989 was selected for Hurricane Hugo's impact on Puerto Rico and was referenced as a date type for the x-intercept in `geom_vline()`. Calcium, potassium, magnesium, and nitrate all increased in concentration following Hurricane Hugo. Calcium was most abundant at MPR, Q3 had high mean concentrations of magnesium and potassium post-hurricane, and nitrate was particularly highly concentrated at Q2 and Q3.
+The data was visualized over a decade (1988-1998) to better visualize assess trends in contaminant concentration over time. An approximate date of 9/21/1989 was selected for Hurricane Hugo's impact on Puerto Rico and was referenced as a date type for the x-intercept in `geom_vline()`. Calcium, potassium, magnesium, and nitrate all increased in concentration following Hurricane Hugo. Calcium was most abundant at MPR, Q3 had high mean concentrations of magnesium and potassium post-hurricane, and nitrate was particularly highly concentrated at Q2 and Q3. 
 
 ```{r}
 hugo <- as.Date("1989-09-21") # store approximate date for hurricane as date type for x-intercept reference in geom_vline()
@@ -92,17 +94,18 @@ plot_facet <- qb_mpr_ma %>% mutate(year_sample = year(Sample_Date)) %>%
     geom_line() + theme_bw() + 
     labs(title = "Nine Week Moving Averages of Nutrients/Contaminants (1988-1998)",
          y = "Moving Average (nine weeks)",
-         x = "Year", caption = "Hurricane Hugo (marked by the dashed line) occurred around 09/21/1989.") + facet_wrap(~factor(nutrients), scales = "free_y", ncol = 1) + geom_vline(xintercept = hugo, linetype = "dashed", col = "red") +
+         x = "Year", caption = "Hurricane Hugo (marked by the dashed line) occurred around 09/21/1989.") + facet_wrap(~factor(nutrients), scales = "free_y", ncol = 1) + 
+  # plot vertical line to demarcate approximate date for hurricane hugo
+  geom_vline(xintercept = hugo, linetype = "dashed", col = "red") +
   theme(
     legend.position = "right",
     plot.title = element_text(size = 14, face = "bold"),
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
 
+plot_facet # view plot
 
-plot_facet
-
-
+# save in figs
 ggsave(filename = paste0("plot_facet.png"), path = here::here("figs"), plot = plot_facet)
 ```
 
@@ -128,4 +131,4 @@ for (i in nutrient_list) {
 }
 ```
 
-![](images/plot_facet.png)
+

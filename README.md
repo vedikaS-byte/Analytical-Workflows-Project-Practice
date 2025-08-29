@@ -54,11 +54,34 @@ A new column called `moving_avg_nutrients` was created by calling `sapply()` to 
 
 ![](figs/flowchart.png)
 
-# Results & Output
+# Results & Supporting Code
 
 The resulting faceted graph was produced from the analysis. Generally, MPR had higher average concentrations of calcium, while Q3 had higher average concentrations of potassium, magnesium, and nitrate in the years following Hurricane Hugo. Increased rainfall, pollution, and drought are potential external influences of fluctuating averaged concentrations in the decade following Hurricane Hugo. Note that an exact match was not possible for moving averaged concentrations of NH4-N due to confounding factors, such as missing concentrations for sampling dates and resulting `NaN` types from the moving average calculation. As a result, future improvements to `moving_avg()` may be included to enhance the accuracy of mean calculations for specified intervals.
 
 ![](figs/plot_facet.png)
+
+Below is supporting code to produce separate visualizations for each contaminant/nutrient for every sample site (also provided in `paper.qmd`):
+
+```{r}
+# create list of nutrients (just want the levels)
+nutrient_list <- unique(qb_mpr_ma$nutrients)
+hugo <- as.Date("1989-09-20")
+for (i in nutrient_list) {
+  # i is not a position but a "type" of nutrient
+  plot_store <- qb_mpr_ma %>% mutate(year_sample = year(Sample_Date)) %>%
+    filter(nutrients == i, year_sample >= 1988 & year_sample <= 1998) %>%
+    #drop_na(moving_avg_nutrients) %>% 
+    ggplot(aes(x = Sample_Date, y = moving_avg_nutrients, col = Sample_ID, group = Sample_ID)) +
+    geom_line() +
+    labs(title = paste("Moving Average of", i),
+         y = "9 Wk Moving Average",
+         x = "Year", caption = "Hurricane Hugo (marked by the dashed line) occurred around 09/21/1989.") + 
+    theme_bw() + geom_vline(xintercept = hugo, linetype = "dashed", col = "red") 
+ 
+   print(plot_store) 
+  ggsave(filename = paste0("plot ", i, ".png"), path = here::here("figs"), plot = plot_store)
+}
+```
 
 # Citation
 
