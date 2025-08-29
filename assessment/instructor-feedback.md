@@ -16,5 +16,6 @@ Collaborating with a fellow coder was an enriching experience. This experience i
 1.  [Issue #16](https://github.com/vedikaS-byte/Analytical-Workflows-Project-Practice/issues/16)
 2.  [Issue #15](https://github.com/vedikaS-byte/Analytical-Workflows-Project-Practice/issues/15)
 3.  [Issue #18](https://github.com/vedikaS-byte/Analytical-Workflows-Project-Practice/issues/18)
-4.  [Resolved merge conflict #3](https://github.com/vedikaS-byte/Analytical-Workflows-Project-Practice/pull/3)
-5.  [Resolved merge conflict #12](https://github.com/vedikaS-byte/Analytical-Workflows-Project-Practice/pull/12)
+4.  [Merged request for moving_avg() on 9/27/2025](https://github.com/vedikaS-byte/Analytical-Workflows-Project-Practice/commit/741efcef9abc7892ad5c1f5aa38f5b2f848e989a)
+5.  [Resolved merge conflict #3](https://github.com/vedikaS-byte/Analytical-Workflows-Project-Practice/pull/3) with collaborator
+6.  [Resolved merge conflict #12](https://github.com/vedikaS-byte/Analytical-Workflows-Project-Practice/pull/12) with collaborator
