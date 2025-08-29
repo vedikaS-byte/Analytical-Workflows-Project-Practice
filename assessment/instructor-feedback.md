@@ -16,3 +16,5 @@ Collaborating with a fellow coder was an enriching experience. This experience i
 1.  [Issue #16](https://github.com/vedikaS-byte/Analytical-Workflows-Project-Practice/issues/16)
 2.  [Issue #15](https://github.com/vedikaS-byte/Analytical-Workflows-Project-Practice/issues/15)
 3.  [Issue #18](https://github.com/vedikaS-byte/Analytical-Workflows-Project-Practice/issues/18)
+4.  [Resolved merge conflict #3](https://github.com/vedikaS-byte/Analytical-Workflows-Project-Practice/pull/3)
+5.  [Resolved merge conflict #12](https://github.com/vedikaS-byte/Analytical-Workflows-Project-Practice/pull/12)
